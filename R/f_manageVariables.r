@@ -10,8 +10,8 @@
 #'   'RECODE x .. y (a = b).'
 #' 
 #' @param dataSetD A data frame containing multiple variables.
-#' @param variablesToDelete A vector containing the variables to be deleted from @param dataSetD.
-#' @return A modified data frame with variables named in @param variablesToDelete removed.
+#' @param variablesToDelete A vector containing the variables to be deleted from `dataSetD`.
+#' @return A modified data frame with variables named in `variablesToDelete` removed.
 #' @export
 
 delete_variables <- function(dataSetD,variablesToDelete){
@@ -25,8 +25,8 @@ delete_variables <- function(dataSetD,variablesToDelete){
 #' Retains only specified variables from a data frame.
 #' 
 #' @param dataSetK A data frame containing multiple variables.
-#' @param variablesToKeep A vector containing the variables to be retained from @param dataSetK. All other variables will be deleted.
-#' @return A modified data frame with only variables named in @param variablesToKeep retained.
+#' @param variablesToKeep A vector containing the variables to be retained from `dataSetK`. All other variables will be deleted.
+#' @return A modified data frame with only variables named in `variablesToKeep` retained.
 #' @export
 
 keep_variables <- function(dataSetK, variablesToKeep){
@@ -41,7 +41,7 @@ keep_variables <- function(dataSetK, variablesToKeep){
 #' 
 #' @param dataSetI A data frame containing multiple variables.
 #' @param variableList A vector containing the variables to be recoded.
-#' @return A modified data frame with 'inf' values recoded to 'NA' in variables specified by @param variableList.
+#' @return A modified data frame with 'inf' values recoded to 'NA' in variables specified by `variableList`.
 #' @export
 
 inf_to_NA <- function(dataSetI, variableList)
@@ -59,7 +59,7 @@ inf_to_NA <- function(dataSetI, variableList)
 #'
 #' @param dataSetN A data frame containing multiple variables.
 #' @param variableList A vector containing the variables to be recoded.
-#' @return A modified data frame with 'NaN' values recoded to 'NA' in variables specified by @param variableList.
+#' @return A modified data frame with 'NaN' values recoded to 'NA' in variables specified by `variableList`.
 #' @export
 
 
@@ -78,8 +78,8 @@ nan_to_NA <- function(datasetN, variableList){
 #' @param dataSetR A data frame containing multiple variables.
 #' @param variableList A vector containing the variables to be recoded.
 #' @param oldValue Existing value to be replaced.
-#' @param newValue Value used to replace @param oldValue
-#' @return A modified data frame with old values recoded to new values in variables specified by @param variableList.
+#' @param newValue Value used to replace `oldValue`.
+#' @return A modified data frame with old values recoded to new values in variables specified by `variableList`.
 #' @export
 
 recode_variables <- function(dataSetR, variableList, oldValue, newValue) {
@@ -106,8 +106,8 @@ recode_variables <- function(dataSetR, variableList, oldValue, newValue) {
 #'
 #' @param dataSetA A data frame containing multiple variables.
 #' @param variableList A vector containing the variables to be recoded.
-#' @param newValue The value that will be assigned to variables specified in @param variableList.
-#' @return A modified data frame with new values in variables specified by @param variableList.
+#' @param newValue The value that will be assigned to variables specified in `variableList`.
+#' @return A modified data frame with new values in variables specified by `variableList`.
 #' @export
 
 
