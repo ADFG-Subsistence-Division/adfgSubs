@@ -4,7 +4,10 @@
 \alias{connectToSDS}
 \title{connectToSDS}
 \usage{
-connectToSDS()
+connectToSDS(server)
+}
+\arguments{
+\item{server}{Server name.}
 }
 \value{
 Server connection.

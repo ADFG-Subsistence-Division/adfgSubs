@@ -11,10 +11,10 @@ assign_value_variables(dataSetA, variableList, newValue)
 
 \item{variableList}{A vector containing the variables to be recoded.}
 
-\item{newValue}{The value that will be assigned to variables specified in @param variableList.}
+\item{newValue}{The value that will be assigned to variables specified in `variableList`.}
 }
 \value{
-A modified data frame with new values in variables specified by @param variableList.
+A modified data frame with new values in variables specified by `variableList`.
 }
 \description{
 Replace whatever is in the specified columns with the assigned value, without regard for the current contents.

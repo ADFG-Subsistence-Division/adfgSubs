@@ -13,10 +13,10 @@ recode_variables(dataSetR, variableList, oldValue, newValue)
 
 \item{oldValue}{Existing value to be replaced.}
 
-\item{newValue}{Value used to replace @param oldValue}
+\item{newValue}{Value used to replace `oldValue`.}
 }
 \value{
-A modified data frame with old values recoded to new values in variables specified by @param variableList.
+A modified data frame with old values recoded to new values in variables specified by `variableList`.
 }
 \description{
 Recodes variables.

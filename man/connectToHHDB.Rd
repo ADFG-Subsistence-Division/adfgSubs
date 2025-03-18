@@ -6,6 +6,9 @@
 \usage{
 connectToHHDB()
 }
+\arguments{
+\item{server}{Server name.}
+}
 \value{
 Server connection.
 }

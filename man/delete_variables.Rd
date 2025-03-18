@@ -9,10 +9,10 @@ delete_variables(dataSetD, variablesToDelete)
 \arguments{
 \item{dataSetD}{A data frame containing multiple variables.}
 
-\item{variablesToDelete}{A vector containing the variables to be deleted from @param dataSetD.}
+\item{variablesToDelete}{A vector containing the variables to be deleted from `dataSetD`.}
 }
 \value{
-A modified data frame with variables named in @param variablesToDelete removed.
+A modified data frame with variables named in `variablesToDelete` removed.
 }
 \description{
 Removes unnecessary variables from a data frame.

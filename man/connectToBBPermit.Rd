@@ -6,6 +6,9 @@
 \usage{
 connectToBBPermit()
 }
+\arguments{
+\item{server}{Server name.}
+}
 \value{
 Server connection.
 }

@@ -12,7 +12,7 @@ inf_to_NA(dataSetI, variableList)
 \item{variableList}{A vector containing the variables to be recoded.}
 }
 \value{
-A modified data frame with 'inf' values recoded to 'NA' in variables specified by @param variableList.
+A modified data frame with 'inf' values recoded to 'NA' in variables specified by `variableList`.
 }
 \description{
 Recodes variables with 'inf' values to 'NA'.

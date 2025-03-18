@@ -12,7 +12,7 @@ nan_to_NA(datasetN, variableList)
 \item{dataSetN}{A data frame containing multiple variables.}
 }
 \value{
-A modified data frame with 'NaN' values recoded to 'NA' in variables specified by @param variableList.
+A modified data frame with 'NaN' values recoded to 'NA' in variables specified by `variableList`.
 }
 \description{
 Recodes variables with 'NaN' values to 'NA'.

@@ -6,6 +6,9 @@
 \usage{
 connectToCSIS()
 }
+\arguments{
+\item{server}{Server name.}
+}
 \value{
 Server connection.
 }

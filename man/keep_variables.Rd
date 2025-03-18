@@ -9,10 +9,10 @@ keep_variables(dataSetK, variablesToKeep)
 \arguments{
 \item{dataSetK}{A data frame containing multiple variables.}
 
-\item{variablesToKeep}{A vector containing the variables to be retained from @param dataSetK. All other variables will be deleted.}
+\item{variablesToKeep}{A vector containing the variables to be retained from `dataSetK`. All other variables will be deleted.}
 }
 \value{
-A modified data frame with only variables named in @param variablesToKeep retained.
+A modified data frame with only variables named in `variablesToKeep` retained.
 }
 \description{
 Retains only specified variables from a data frame.

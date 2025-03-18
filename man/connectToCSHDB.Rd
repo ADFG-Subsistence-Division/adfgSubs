@@ -6,6 +6,9 @@
 \usage{
 connectToCSHDB()
 }
+\arguments{
+\item{server}{Server name.}
+}
 \value{
 Server connection.
 }
