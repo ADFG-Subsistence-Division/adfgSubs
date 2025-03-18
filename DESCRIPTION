@@ -1,11 +1,13 @@
 Package: adfgSubs
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Type: Package
+Title: ADF&G Subsistence Data Analysis Functions 
+Version: 0.1.0
+Authors@R: c(
+  person("Koster", "David", email = "david.koster@alaska.gov", role = c("aut")),
+  person("Coleman", "Jesse", email = "jesse.coleman@alaska.gov", role = c("cre")))
+Description: Functions to organize and standardize data used in the analysis of subsistence survey data.
+License: use_mit_license()
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+LazyData: false
+Imports:
+    tidyverse
