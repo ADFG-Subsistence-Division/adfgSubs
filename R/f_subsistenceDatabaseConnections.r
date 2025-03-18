@@ -5,13 +5,12 @@
 #' @returns Nothing.
 #' @export
 #'
-#' @examples
 loadODBCLibrary = function(){
   library(odbc)
 }
 
 #' connectToSDS
-#' 
+#'
 #' Initializes connection to Subsistence Database server.
 #'
 #' @returns Server connection.
@@ -27,12 +26,12 @@ connectToSDS = function()
                   , .connection_string = "Trusted_Connection=True;"
                   , timeout = 10
                   , encoding = "UTF-8")
-  
+
   return(connectSDS)
 }
 
 #' connectToASFDB
-#' 
+#'
 #' Initializes connection to Alaska Salmon Fishery Database server.
 #'
 #' @returns Server connection.
@@ -48,12 +47,12 @@ connectToASFDB = function()
                          , .connection_string = "Trusted_Connection=True;"
                          , timeout = 10
                          , encoding = "UTF-8")
-  
+
   return(connectASFDB)
 }
 
 #' connectToCSIS
-#' 
+#'
 #' Initializes connection to Community Subsistence Information System server.
 #'
 #' @returns Server connection.
@@ -69,12 +68,12 @@ connectToCSIS = function()
                            , .connection_string = "Trusted_Connection=True;"
                            , timeout = 10
                            , encoding = "UTF-8")
-  
+
   return(connectCSIS)
 }
 
 #' connectToKuskokwim
-#' 
+#'
 #' Initializes connection to Kusko database server.
 #'
 #' @returns Server connection.
@@ -89,13 +88,13 @@ connectToKuskokwim = function()
                            , database = 'Sub_Kuskokwim'
                            , .connection_string = "Trusted_Connection=True;"
                            , timeout = 10
-                           , encoding = "UTF-8") 
-    
+                           , encoding = "UTF-8")
+
   return(connectKusko)
 }
 
 #' connectToHalibut
-#' 
+#'
 #' Initializes connection to halibut database server.
 #'
 #' @returns Server connection.
@@ -114,7 +113,7 @@ connectToHalibut = function()
 }
 
 #' connectToHHDB
-#' 
+#'
 #' Initializes connection to household database server.
 #'
 #' @returns Server connection.
@@ -129,13 +128,13 @@ connectToHHDB = function()
                            , database = 'Sub_Survey_Household'
                            , .connection_string = "Trusted_Connection=True;"
                            , timeout = 10
-                           , encoding = "UTF-8") 
-  
+                           , encoding = "UTF-8")
+
   return(connectHHDB)
 }
 
 #' connectToCSHDB
-#' 
+#'
 #' Initializes connection to community subsistence hunt (GMU 13 moose and caribou) database server.
 #'
 #' @returns Server connection.
@@ -149,13 +148,13 @@ connectToCSHDB = function()
                            , database = 'Sub_CSH'
                            , .connection_string = "Trusted_Connection=True;"
                            , timeout = 10
-                           , encoding = "UTF-8") 
-  
+                           , encoding = "UTF-8")
+
   return(connectCSH)
 }
 
 #' connectToBBPermit
-#' 
+#'
 #' Initializes connection to Bristol Bay subsistence salmon fishery permit database server.
 #'
 #' @returns Server connection.
@@ -169,7 +168,7 @@ connectToBBPermit = function()
                                , database = 'Sub_Permit_BB'
                                , .connection_string = "Trusted_Connection=True;"
                                , timeout = 10
-                               , encoding = "UTF-8") 
-  
+                               , encoding = "UTF-8")
+
   return(connectBBPerm)
 }
