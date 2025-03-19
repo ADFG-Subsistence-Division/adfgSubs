@@ -62,7 +62,7 @@ connectToASFDB = function(server)
 #' @export
 #'
 
-connectToCSIS = function()
+connectToCSIS = function(server)
 {
   connectCSIS = odbc::dbConnect(odbc::odbc()
                            , driver = 'SQL Server'
@@ -84,7 +84,7 @@ connectToCSIS = function()
 #' @export
 #'
 
-connectToKuskokwim = function()
+connectToKuskokwim = function(server)
 {
   connectKusko = odbc::dbConnect(odbc::odbc()
                            , driver = 'SQL Server'
@@ -105,7 +105,7 @@ connectToKuskokwim = function()
 #' @returns Server connection.
 #' @export
 #'
-connectToHalibut = function()
+connectToHalibut = function(server)
 {
   connectHalibut = odbc::dbConnect(odbc::odbc()
                              , driver = 'SQL Server'
@@ -126,7 +126,7 @@ connectToHalibut = function()
 #' @export
 #'
 
-connectToHHDB = function()
+connectToHHDB = function(server)
 {
   connectHHDB = odbc::dbConnect(odbc::odbc()
                            , driver = 'SQL Server'
@@ -147,7 +147,7 @@ connectToHHDB = function()
 #' @returns Server connection.
 #' @export
 #'
-connectToCSHDB = function()
+connectToCSHDB = function(server)
 {
   connectCSH = odbc::dbConnect(odbc::odbc()
                            , driver = 'SQL Server'
@@ -168,7 +168,7 @@ connectToCSHDB = function()
 #' @returns Server connection.
 #' @export
 #'
-connectToBBPermit = function()
+connectToBBPermit = function(server)
 {
   connectBBPerm = odbc::dbConnect(odbc::odbc()
                                , driver = 'SQL Server'
