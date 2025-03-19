@@ -4,7 +4,7 @@
 \alias{connectToHHDB}
 \title{connectToHHDB}
 \usage{
-connectToHHDB()
+connectToHHDB(server)
 }
 \arguments{
 \item{server}{Server name.}

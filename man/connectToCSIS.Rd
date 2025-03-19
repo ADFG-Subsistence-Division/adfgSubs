@@ -4,7 +4,7 @@
 \alias{connectToCSIS}
 \title{connectToCSIS}
 \usage{
-connectToCSIS()
+connectToCSIS(server)
 }
 \arguments{
 \item{server}{Server name.}

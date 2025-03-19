@@ -4,7 +4,7 @@
 \alias{connectToBBPermit}
 \title{connectToBBPermit}
 \usage{
-connectToBBPermit()
+connectToBBPermit(server)
 }
 \arguments{
 \item{server}{Server name.}

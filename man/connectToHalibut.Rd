@@ -4,7 +4,7 @@
 \alias{connectToHalibut}
 \title{connectToHalibut}
 \usage{
-connectToHalibut()
+connectToHalibut(server)
 }
 \arguments{
 \item{server}{Server name.}

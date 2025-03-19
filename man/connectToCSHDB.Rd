@@ -4,7 +4,7 @@
 \alias{connectToCSHDB}
 \title{connectToCSHDB}
 \usage{
-connectToCSHDB()
+connectToCSHDB(server)
 }
 \arguments{
 \item{server}{Server name.}

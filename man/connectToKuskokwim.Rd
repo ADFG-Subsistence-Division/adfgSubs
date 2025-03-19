@@ -4,7 +4,7 @@
 \alias{connectToKuskokwim}
 \title{connectToKuskokwim}
 \usage{
-connectToKuskokwim()
+connectToKuskokwim(server)
 }
 \arguments{
 \item{server}{Server name.}
