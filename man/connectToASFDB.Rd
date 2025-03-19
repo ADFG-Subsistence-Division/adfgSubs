@@ -4,7 +4,7 @@
 \alias{connectToASFDB}
 \title{connectToASFDB}
 \usage{
-connectToASFDB()
+connectToASFDB(server)
 }
 \arguments{
 \item{server}{Server name.}

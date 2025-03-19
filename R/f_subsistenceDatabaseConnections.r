@@ -40,7 +40,7 @@ connectToSDS = function(server)
 #' @export
 #'
 
-connectToASFDB = function()
+connectToASFDB = function(server)
 {
   connectASFDB = odbc::dbConnect(odbc::odbc()
                          , driver = 'SQL Server'
