@@ -17,8 +17,8 @@ meanReplaceStratified(sourceData, replCol, checkCol = "harvestq")
 A modified data frame containing mean replaced values in the specified variables.
 }
 \description{
-Simple mean replacement for a stratified sample. This function REQUIRES that 
-   sourceData contain: "projID", "studyear", "communty", "resource", 
+Simple mean replacement for a stratified sample. This function REQUIRES that
+   sourceData contain: "projID", "studyear", "communty", "resource",
                        "strata", replCol, "commhh", "NHouseholds".
    additionally, a 'check-column' is required, this might be
    "harvestq" (default) or "filterq" or other specified column to indicate
@@ -28,6 +28,6 @@ This is to be used for simple circumstances where there are no details
 Note that the inclusion of harvestq in this list is intended to differentiate
   between 'some amount, amount unknown", and instances where the question of
   whether or not a harvest even occurred is unknown. If the status is
-  "some amount, amount unknown" ie: harvestq == 1, then minimum replacement 
+  "some amount, amount unknown" ie: harvestq == 1, then minimum replacement
   occurs, if not then the community mean is supplied regardless.
 }

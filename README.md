@@ -22,5 +22,5 @@ For persistent settings, you can add this to your .Rprofile:
 options(devtools.upgrade = "never")
 ```
 
-Last updated: 2025-03-19 19:44:22 UTC
+Last updated: 2025-03-19 19:53:21 UTC
 Maintainer: jmcoleman2-sub-ak
