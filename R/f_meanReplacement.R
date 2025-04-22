@@ -18,7 +18,7 @@
 #' @param sourceData A data frame containing multiple variables.
 #' @param replCol A vector containing the variables from sourceData for which values will be mean replaced.
 #' @param checkCol Description
-#' @returns A modified data frame containing mean replaced values in the specified variables.
+#' @returns A modified column containing mean replaced values.
 #'
 #' @export
 
@@ -83,8 +83,125 @@ meanReplaceStratified <- function(sourceData, replCol, checkCol = "harvestq")
   return(coalesce(sourceData$meanReplaced, sourceData$minimumReplace))
 }
 
+#' dfMeanReplaceStratified
+#'
+#' @description
+#' Simple mean replacement for a stratified sample. This function REQUIRES that
+#'    sourceData contain: "projID", "studyear", "communty", "resource",
+#'                        "strata", replCol, "commhh", "NHouseholds".
+#'    additionally, a 'check-column' is required, this might be
+#'    "harvestq" (default) or "filterq" or other specified column to indicate
+#'    whether or not a resource requires a non-zero amount (ie: minimum replacement).
+#' This is to be used for simple circumstances where there are no details
+#'    such as sex, season or gear type.
+#' Note that the inclusion of harvestq in this list is intended to differentiate
+#'   between 'some amount, amount unknown", and instances where the question of
+#'   whether or not a harvest even occurred is unknown. If the status is
+#'   "some amount, amount unknown" i.e., harvestq == 1, then minimum replacement
+#'   occurs, if not then the community mean is supplied regardless.
+#'
+#' This function first tries strata-level means:
+#'
+#'  Groups by projID, studyear, communty, resource, and strata
+#'  Calculates mean within these fine-grained groups
+#'
+#' Then tries community-level means:
+#'
+#'  Groups by projID, studyear, communty, and resource
+#'  Uses these broader groups as a secondary fallback
+#'  Provides additional fallbacks:
+#'
+#' Finally, if all else fails:
+#'  The minimum value strata is used at the replacement value.
+#'
+#' Detailed diagnostics:
+#'
+#' Shows values of calculated means at each level
+#' Counts of NA values and zeros
+#' Summary statistics before and after replacement
+#'
+#' @param sourceData A data frame containing multiple variables.
+#' @param replCol A vector containing the variables from sourceData for which values will be mean replaced.
+#' @param checkCol Description
+#' @param verbose Logical; should the mean (before and after replacement), number of NA values, and number of zeroes be returned? Default is TRUE
+#' @returns A modified data frame containing mean replaced values in the specified variables.
+#'
+#' @export
 
-### THIS IS AN INCOMPLETE FUNCTION
+dfMeanReplaceStratified <- function(sourceData, replCols, checkCol = "filterq", verbose = TRUE) {
+  # Validate columns exist
+  required_cols <- c("projID", "studyear", "communty", "resource",
+                     "strata", "commhh", "NHouseholds", checkCol)
+  all_cols <- c(required_cols, replCols)
+
+  missing_cols <- setdiff(all_cols, names(sourceData))
+  if (length(missing_cols) > 0) {
+    stop(paste("Required columns not present:", paste(missing_cols, collapse=", ")))
+  }
+
+  # Process each column in the list
+  for (col in replCols) {
+    if(verbose) cat("\nProcessing column:", col, "\n")
+    if(verbose) cat("Overall mean before replacement:", mean(sourceData[[col]], na.rm=TRUE), "\n")
+    if(verbose) cat("NA count before replacement:", sum(is.na(sourceData[[col]])), "\n")
+
+    # Create a temporary working copy
+    temp_data <- sourceData
+
+    # Calculate strata-level means (finest grouping)
+    temp_data <- temp_data %>%
+      group_by(projID, studyear, communty, resource, strata) %>%
+      mutate(strata_mean = mean(!!sym(col), na.rm = TRUE)) %>%
+      ungroup()
+
+    # Replace NaN with NA in strata means
+    temp_data$strata_mean[is.nan(temp_data$strata_mean)] <- NA
+
+    if(verbose) {
+      cat("Unique strata means:", paste(unique(round(temp_data$strata_mean, 3))[!is.na(unique(round(temp_data$strata_mean, 3)))], collapse=", "), "\n")
+      cat("NA count in strata means:", sum(is.na(temp_data$strata_mean)), "\n")
+    }
+
+    # Calculate community-level means (broader grouping)
+    temp_data <- temp_data %>%
+      group_by(projID, studyear, communty, resource) %>%
+      mutate(community_mean = mean(!!sym(col), na.rm = TRUE)) %>%
+      ungroup()
+
+    # Replace NaN with NA in community means
+    temp_data$community_mean[is.nan(temp_data$community_mean)] <- NA
+
+    if(verbose) {
+      cat("Unique community means:", paste(unique(round(temp_data$community_mean, 3))[!is.na(unique(round(temp_data$community_mean, 3)))], collapse=", "), "\n")
+      cat("NA count in community means:", sum(is.na(temp_data$community_mean)), "\n")
+    }
+
+
+    # Prioritized replacement: original values → strata means → community means → minimum
+    temp_data[[col]] <- ifelse(!is.na(temp_data[[col]]),
+                               temp_data[[col]],
+                               ifelse(!is.na(temp_data$strata_mean),
+                                      temp_data$strata_mean,
+                                      ifelse(!is.na(temp_data$community_mean),
+                                             temp_data$community_mean,
+                                             min(temp_data[[col]]))))
+
+    # Return the modified column to the source data
+    sourceData[[col]] <- temp_data[[col]] %>% round(digits = 2)
+
+    if(verbose) {
+      cat("NA count after replacement:", sum(is.na(sourceData[[col]])), "\n")
+      cat("Zero count after replacement:", sum(sourceData[[col]] == 0, na.rm=TRUE), "\n")
+      cat("Mean after replacement:", mean(sourceData[[col]], na.rm=TRUE), "\n")
+      cat("Min value after replacement:", min(sourceData[[col]], na.rm=TRUE), "\n")
+      cat("Max value after replacement:", max(sourceData[[col]], na.rm=TRUE), "\n")
+    }
+  }
+
+  return(sourceData)
+}
+
+### THIS IS AN INCOMPLETE FUNCTION ----
 #
 # meanReplace <- function(sourceData, projectKeyList=c("projID","studyear","communty"),
 #                           hhKeyList=c("HHID","strata"),
