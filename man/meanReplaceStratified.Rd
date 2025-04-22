@@ -14,7 +14,7 @@ meanReplaceStratified(sourceData, replCol, checkCol = "harvestq")
 \item{checkCol}{Description}
 }
 \value{
-A modified data frame containing mean replaced values in the specified variables.
+A modified column containing mean replaced values.
 }
 \description{
 Simple mean replacement for a stratified sample. This function REQUIRES that
