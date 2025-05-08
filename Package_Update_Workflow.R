@@ -42,7 +42,7 @@ usethis::use_news_md()
 
 # Commit and push changes; describe updates
 
-# Create a Pull Request
+# Create a Pull Request (Not necessary unless collaborative package editing is occurring)
 # Go to your repository on GitHub
 # Click "Compare & pull request"
 # Describe your changes and submit the PR
@@ -57,3 +57,7 @@ usethis::use_github_release()
 usethis::use_mit_license()
 usethis::use_pkgdown()
 pkgdown::build_site()
+
+# Reinstall updated package from github
+
+devtools::install_github("ADFG-Subsistence-Division/adfgSubs")
