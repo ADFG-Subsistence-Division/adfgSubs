@@ -1,26 +1,26 @@
+
 # adfgSubs
-Functions for analysis of ADF&G Subsistence survey data.
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of adfgSubs is to ...
 
 ## Installation
 
-You can install the development version of adfgSubs from GitHub using:
+You can install the development version of adfgSubs from [GitHub](https://github.com/) with:
 
-```R
-# Install without updating dependencies (recommended)
-devtools::install_github("ADFG-Subsistence-Division/adfgSubs", upgrade = "never")
-
-# Alternative installation methods:
-# With no dependencies check
-devtools::install_github("ADFG-Subsistence-Division/adfgSubs", dependencies = FALSE)
-
-# Force installation (if you encounter lock file issues)
-devtools::install_github("ADFG-Subsistence-Division/adfgSubs", force = TRUE, upgrade = "never")
+``` r
+# install.packages("pak")
+pak::pak("ADFG-Subsistence-Division/adfgSubs")
 ```
 
-For persistent settings, you can add this to your .Rprofile:
-```R
-options(devtools.upgrade = "never")
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(adfgSubs)
+## basic example code
 ```
 
-Last updated: 2025-03-19 19:53:21 UTC
-Maintainer: jmcoleman2-sub-ak
