@@ -5,7 +5,7 @@
 #' @param N The total number households in the community.
 #'
 #' @returns The lower CI, the upper CI, and the
-#'
+#' @export
 
 calculateCI <- function(x, conf_level = 0.95, N = NULL) {
   # Note: this code discounts the 'n' for individual missing components
@@ -32,7 +32,7 @@ calculateCI <- function(x, conf_level = 0.95, N = NULL) {
 #' @returns The mode of the values in the supplied variable.
 #'
 #' @description Helper function; not yet implemented.
-#'
+#' @export
 calculateMode <- function(x) {
   x <- na.omit(x)
   ux <- unique(x)
@@ -58,8 +58,8 @@ getSubsStratifiedSurveyEstimate <- function(data,
 #'
 #' @returns A data frame with summarized variables.
 #'
-#'
 #' @description Summary data specific to subsistence the analysis design for subsistence.
+#' @export
 
 getSubsSurveyEstimate <- function(data,
                                   summarize_vars,
