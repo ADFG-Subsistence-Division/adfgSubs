@@ -1,3 +1,12 @@
+#' calculateCI
+#'
+#' @param x An estimated variable for which confidence intervals are to be created.
+#' @param conf_level The desired confidence level for the estimate.
+#' @param N The total number households in the community.
+#'
+#' @returns The lower CI, the upper CI, and the
+#'
+
 calculateCI <- function(x, conf_level = 0.95, N = NULL) {
   # Note: this code discounts the 'n' for individual missing components
   x <- na.omit(x)
@@ -15,7 +24,15 @@ calculateCI <- function(x, conf_level = 0.95, N = NULL) {
   mean_x <- mean(x)
   c(mean_x - error, mean_x + error, error / mean_x)
 }
-# Helper function to calculate mode (handles NA values)
+
+#' calculateMode
+#'
+#' @param x A numeric variable for which the mode will be calculated.
+#'
+#' @returns The mode of the values in the supplied variable.
+#'
+#' @description Helper function; not yet implemented.
+#'
 calculateMode <- function(x) {
   x <- na.omit(x)
   ux <- unique(x)
@@ -28,9 +45,22 @@ getSubsStratifiedSurveyEstimate <- function(data,
                                             strata_col = "") {
   stop("Not implemented")
 }
-#
-# Summary data specific to subsistence the analysis design for subsistence.
-#
+
+#' getSubsSurveyEstimate
+#'
+#' @param data A data frame.
+#' @param summarize_vars A vector containing names of variables to be summarized.
+#' @param grouping_vars A vector containing names of variables to group by;
+#' one estimate is given for each combination of grouping variables.
+#' @param N_col A column in the data frame with the total number of households (N).
+#' @param addvariables Logical; should the columns containing descriptive statistics
+#' and the estimate be returned in addition to the summarized data frame? Default is 'FALSE'.
+#'
+#' @returns A data frame with summarized variables.
+#'
+#'
+#' @description Summary data specific to subsistence the analysis design for subsistence.
+
 getSubsSurveyEstimate <- function(data,
                                   summarize_vars,
                                   grouping_vars=c("projID", "studyear", "communty", "strata"),
