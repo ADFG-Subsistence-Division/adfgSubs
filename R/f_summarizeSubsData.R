@@ -6,7 +6,6 @@
 #'
 #' @returns The lower CI, the upper CI, and the
 #' @export
-
 calculateCI <- function(x, conf_level = 0.95, N = NULL) {
   # Note: this code discounts the 'n' for individual missing components
   x <- na.omit(x)
@@ -60,7 +59,6 @@ getSubsStratifiedSurveyEstimate <- function(data,
 #'
 #' @description Summary data specific to subsistence the analysis design for subsistence.
 #' @export
-
 getSubsSurveyEstimate <- function(data,
                                   summarize_vars,
                                   grouping_vars=c("projID", "studyear", "communty", "strata"),
