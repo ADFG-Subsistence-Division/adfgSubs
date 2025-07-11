@@ -4,7 +4,7 @@
 #' @param conf_level The desired confidence level for the estimate.
 #' @param N The total number households in the community.
 #'
-#' @returns The lower CI, the upper CI, and the
+#' @returns The lower CI bound, the upper CI bound, and the relative margin of error
 #' @export
 calculateCI <- function(x, conf_level = 0.95, N = NULL) {
   # Note: this code discounts the 'n' for individual missing components
@@ -30,19 +30,72 @@ calculateCI <- function(x, conf_level = 0.95, N = NULL) {
 #'
 #' @returns The mode of the values in the supplied variable.
 #'
-#' @description Helper function; not yet implemented.
+#' @description Helper function
 #' @export
 calculateMode <- function(x) {
   x <- na.omit(x)
   ux <- unique(x)
   ux[which.max(tabulate(match(x, ux)))]
 }
-getSubsStratifiedSurveyEstimate <- function(data,
-                                            summarize_vars,
-                                            grouping_vars=c("projID", "studyear", "communty", "strata"),
-                                            N_col = "commhh",
-                                            strata_col = "") {
-  stop("Not implemented")
+
+#' getSubsStratifiedSurveyEstimate
+#'
+#' @param x A list of variables for which expanded estimates, confidence intervals,
+#' and relative margins of error will be calculated and summarized.
+#'
+#' @returns Estimates, confidence intervals, and relative margins of error
+#'
+#' @description Calculates variable estimates for stratified samples.
+#' @export
+getSubsStratifiedSurveyEstimate <- function(
+    data,
+    summarize_vars,
+    grouping_vars = c("projID", "studyear", "communty", "strata"),
+    N_col = "commhh",
+    strata_col = "strata"
+) {
+  library(dplyr)
+  library(tidyr)
+  library(purrr)
+
+  # Check inputs
+  if (length(summarize_vars) == 0) stop("You must provide one or more summary variables.")
+  if (!all(summarize_vars %in% names(data))) stop("One or more specified summary variables not in provided data frame.")
+  if (!all(grouping_vars %in% names(data))) stop("One or more specified grouping variables not in provided data frame.")
+  if (!N_col %in% names(data)) stop("The specified total 'N' value (N_col) not in provided data frame.")
+  if (!strata_col %in% names(data)) stop("The specified strata column (strata_col) not in provided data frame.")
+
+  # Calculate household-level estimates (wide)
+  hh_estimates <- data %>%
+    select(all_of(c(grouping_vars, N_col, summarize_vars))) %>%
+    mutate(across(all_of(summarize_vars), as.numeric)) # ensure numeric
+
+  # Convert to long format for summary
+  long_hh <- hh_estimates %>%
+    pivot_longer(cols = all_of(summarize_vars), names_to = "variable", values_to = "value")
+
+  # Summarize by group, variable
+  summarized <- long_hh %>%
+    group_by(across(all_of(grouping_vars)), variable) %>%
+    summarise(
+      n = n(),
+      N = first(.data[[N_col]]),
+      mean = mean(value, na.rm = TRUE),
+      var = var(value, na.rm = TRUE),
+      se = sqrt(var(value, na.rm = TRUE) / n()),
+      t_crit = qt(0.975, df = n()-1),
+      margin = t_crit * se,
+      ci_lower = mean - margin,
+      ci_upper = mean + margin,
+      rel_margin = ifelse(mean != 0, margin / abs(mean), NA_real_),
+      .groups = "drop"
+    )
+
+  # Output as a list: household-level data and summary table
+  return(
+    household_estimates = hh_estimates,
+    summary = summarized
+  )
 }
 
 #' getSubsSurveyEstimate
