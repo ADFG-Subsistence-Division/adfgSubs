@@ -6,7 +6,7 @@ Authors@R: c(
   person("Koster", "David", email = "david.koster@alaska.gov", role = c("aut")),
   person("Coleman", "Jesse", email = "jesse.coleman@alaska.gov", role = c("cre")))
 Description: Functions to organize and standardize data used in the analysis of subsistence survey data.
-License: use_mit_license()
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
