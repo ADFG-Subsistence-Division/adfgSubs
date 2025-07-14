@@ -56,6 +56,8 @@ standardizeConvFact <- function(sourceData, convData, variableList){
     nStdData <- mutate(nStdData, across(all_of(variableList), ~ . * sUnits))
   }
 
+  nStdData$units = nStdData$defaultUnits
+
   # 2.5 Combine the data frames back together
   sourceData <- bind_rows(stdData, nStdData)
 

@@ -13,5 +13,5 @@ calculateMode(x)
 The mode of the values in the supplied variable.
 }
 \description{
-Helper function; not yet implemented.
+Helper function
 }

@@ -1,3 +1,6 @@
+# adfgSubs 0.4.0
+*Fixed standardizeConversionFactors() to resolve issue with double converting resources whose standard units are 'lb' (e.g., Pacific halibut)
+
 # adfgSubs 0.3.0
 * Added survey estimation and confidence interval calculation functions.
   * `calculateCI()`

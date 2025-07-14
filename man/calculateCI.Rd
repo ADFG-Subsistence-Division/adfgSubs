@@ -14,7 +14,7 @@ calculateCI(x, conf_level = 0.95, N = NULL)
 \item{N}{The total number households in the community.}
 }
 \value{
-The lower CI, the upper CI, and the
+The lower CI bound, the upper CI bound, and the relative margin of error
 }
 \description{
 calculateCI
