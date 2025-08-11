@@ -1,0 +1,323 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r Replace YAML header}
+
+folders <- c("C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 1 - Extraction and Validation",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 2 - Standardize and Validate",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Demographics",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 4 - Income and Employment",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 5 - Harvest processing",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 6 - Assessments and summary",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 7 - SNA")
+
+foldersYukonComps <- c(
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 1 - Extraction and Validation",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 2 - Standardize and Validate",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Demographics",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 4 - Income and Employment",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 5 - Harvest processing",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 6 - Assessments and summary",
+            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 7 - SNA")
+  
+  
+  
+  
+# all_files <- unlist(
+#   lapply(folders, function(dir) list.files(dir, pattern = "\\.Rmd$", full.names = TRUE, recursive = TRUE))
+# )
+
+
+replaceYAML <- function(
+  files = NULL,
+  folders = NULL,
+  pattern = "\\.Rmd$",
+  author = "Jesse Coleman",
+  date = "2025-08-11",
+  output_lines = c(
+    "  html_document:",
+    "    theme: null",
+    "    css: ../HTML/adfg-style.css",
+    "    include:",
+    "      before_body: ../HTML/header.html",
+    "      after_body: ../HTML/footer.html"
+  ),
+  suffix = "- (294) Yukon Comprehensives 2024"
+) {
+  # Collect files from folders if needed
+  if (!is.null(folders)) {
+    files_from_folders <- unlist(
+      lapply(folders, function(dir) list.files(dir, pattern = pattern, full.names = TRUE, recursive = TRUE))
+    )
+    files <- unique(c(files, files_from_folders))
+  }
+  files <- files[!is.na(files) & file.exists(files)] # Filter valid files
+  
+  results <- data.frame(
+    file = files,
+    status = NA_character_,
+    message = NA_character_,
+    stringsAsFactors = FALSE
+  )
+  
+  for (i in seq_along(files)) {
+    file <- files[i]
+    res <- tryCatch({
+      lines <- readLines(file, warn = FALSE)
+      yaml_starts <- which(trimws(lines) == "---")
+      if (length(yaml_starts) >= 2) {
+        file_base <- tools::file_path_sans_ext(basename(file))
+        new_header <- c(
+          "---",
+          sprintf('title: "%s %s"', file_base, suffix),
+          sprintf('author: "%s"', author),
+          sprintf('date: "%s"', date),
+          "output:",
+          output_lines,
+          "---",
+          '<div class="title-container">',
+          '  <img class="title-logo" src="../HTML/adfg_logo.png" alt="ADFG Logo"/>',
+          sprintf('  <div class="title">%s %s</div>', file_base, suffix),
+          "</div>"
+        )
+        before <- if (yaml_starts[1] > 1) lines[1:(yaml_starts[1] - 1)] else character(0)
+        after <- lines[(yaml_starts[2] + 1):length(lines)]
+        new_lines <- c(before, new_header, after)
+        writeLines(new_lines, file)
+        message(sprintf("Updated: %s", file))
+        results$status[i] <- "updated"
+        results$message[i] <- "YAML and HTML replaced"
+      } else {
+        warning(sprintf("YAML header not found: %s", file))
+        results$status[i] <- "skipped"
+        results$message[i] <- "YAML header not found"
+      }
+    }, error = function(e) {
+      warning(sprintf("Error processing %s: %s", file, e$message))
+      results$status[i] <- "error"
+      results$message[i] <- e$message
+    })
+  }
+  invisible(results)
+}
+
+replaceYAML(folders = foldersYukonComps)
+
+```
+
+```{r Replace code chunks}
+
+replaceCodeChunks <- function(
+  path = ".",
+  pattern = "\\.Rmd$",
+  exclude = NULL,           # vector of filenames to exclude
+  chunk_label = NULL,       # code chunk label, e.g., "write csv files"
+  new_code = NULL,          # new code, as a vector of lines (no chunk header/footer)
+  rec_pattern = "REC[0-9]{2}",
+  rec_placeholder = "REC_PLACEHOLDER"
+) {
+  files <- list.files(path, pattern = pattern, full.names = TRUE)
+  if (!is.null(exclude)) {
+    files <- files[!basename(files) %in% exclude]
+  }
+  
+  for (file in files) {
+    lines <- readLines(file)
+    # Find chunk start by label
+    chunk_start <- grep(paste0("^```\\{r[ ,].*", chunk_label, ".*\\}"), lines)
+    if (length(chunk_start) == 0) {
+      message(sprintf("Chunk label '%s' not found in %s. Skipping.", chunk_label, file))
+      next
+    }
+    # Find chunk end (first ``` after chunk_start)
+    chunk_end <- which((seq_along(lines) > chunk_start) & grepl("^```$", lines))[1]
+    if (is.na(chunk_end)) {
+      message(sprintf("Could not find end of chunk after '%s' in %s. Skipping.", chunk_label, file))
+      next
+    }
+    # Extract RECxx value from the old chunk body
+    chunk_body <- lines[(chunk_start+1):(chunk_end-1)]
+    rec_matches <- regmatches(chunk_body, gregexpr(rec_pattern, chunk_body))
+    rec_value <- unique(unlist(rec_matches))
+    if (length(rec_value) > 0) {
+      rec_value <- rec_value[1]
+      # Replace placeholder in new code with the actual RECxx value
+      new_code_fixed <- gsub(rec_placeholder, rec_value, new_code)
+    } else {
+      new_code_fixed <- new_code
+    }
+    # Rebuild lines: everything before chunk_start, chunk header, new_code_fixed, chunk footer, everything after chunk_end
+    new_lines <- c(
+      lines[1:(chunk_start-1)],
+      lines[chunk_start],   # chunk header (once)
+      new_code_fixed,
+      lines[chunk_end]      # chunk footer (once)
+    )
+    if (chunk_end < length(lines)) {
+      new_lines <- c(new_lines, lines[(chunk_end+1):length(lines)])
+    }
+    writeLines(new_lines, file)
+    message(sprintf("Updated chunk '%s' in %s.", chunk_label, file))
+  }
+}
+
+
+newCode <- c("
+# Write out CSIS organized file.
+  fName = str_interp('../../CSV/03 - main/REC_PLACEHOLDER_CSIS_ORG_clean.csv')
+  cat(formatSummaryBlock(
+    paste('Writing file: ', fName, 
+          ' ', nrow(REC_PLACEHOLDERCSISData), ' records to be written', sep='')))
+
+rio::export(REC_PLACEHOLDERCSISData, fName)
+
+# Write out unspecified resource conversion factor table for binding to convFact.csv
+  fName = str_interp('../../CSV/03 - main/REC_PLACEHOLDER_calc_convFact.csv')
+  cat(formatSummaryBlock(
+    paste('Writing file: ', fName, 
+          ' ', nrow(calcConvFactData), ' records to be written', sep='')))
+
+rio::export(calcConvFactData, fName)
+"
+)
+
+
+replaceCodeChunks(path = folders[2],
+                  exclude = c("B01_PREP_SAMPLE.Rmd",
+                              "B02_PREP_PERSON.Rmd",
+                              "B03_PREP_CONVERSION_FACTOR.Rmd",
+                              "B13_PREP_REC24.Rmd",
+                              "B14_PREP_FOOD_SECURITY.Rmd",
+                              "F15_MAKE_ALL_RESOURCE_FILE.Rmd"),
+                  chunk_label = "write csv files",
+                  new_code = newCode)
+```
+
+```{r Insert code chunk}
+
+insertChunkAfter <- function(
+  path = ".",
+  pattern = "\\.Rmd$",
+  after_chunk_label,      # e.g., "setup" for chunk labeled {r setup}
+  new_header = NULL,      # e.g., "## New Step"
+  new_text = NULL,        # e.g., "This section does something new."
+  new_chunk = NULL        # vector of lines for the new chunk
+) {
+  files <- list.files(path, pattern = pattern, full.names = TRUE)
+  
+  for (file in files) {
+    lines <- readLines(file)
+    # Find start of target chunk by label
+    chunk_starts <- grep(paste0("^```\\{r[ ,].*", after_chunk_label, ".*\\}"), lines)
+    if (length(chunk_starts) == 0) {
+      message(sprintf("Chunk label '%s' not found in %s. Skipping.", after_chunk_label, file))
+      next
+    }
+    # Find end of that chunk (the first ``` after the chunk start)
+    chunk_ends <- sapply(chunk_starts, function(start) {
+      end <- which((seq_along(lines) > start) & grepl("^```$", lines))[1]
+      if (!is.na(end)) return(end) else return(NA)
+    })
+    # Only proceed if both start and end are found
+    if (any(is.na(chunk_ends))) {
+      message(sprintf("Could not find end of chunk after '%s' in %s. Skipping.", after_chunk_label, file))
+      next
+    }
+    # We'll only process the first occurrence for simplicity
+    insert_pos <- chunk_ends[1]
+    # Prepare insertion lines
+    insertion <- c()
+    if (!is.null(new_header)) insertion <- c(insertion, new_header)
+    if (!is.null(new_text)) insertion <- c(insertion, new_text)
+    if (!is.null(new_chunk)) insertion <- c(insertion, new_chunk)
+    # Insert after the found chunk end
+    new_lines <- append(lines, insertion, after = insert_pos)
+    writeLines(new_lines, file)
+    message(sprintf("Inserted new chunk after '%s' in %s.", after_chunk_label, file))
+  }
+}
+
+newHeader <-c("## Conversion factors for unspecified resources")
+
+newText <- c("Resources are often reported as 'unspecified', in cases where the survey respondent
+was unsure of the species harvested or received. To calculate the edible weight of 
+unspecified resources harvested, similar resources and the amounts/weights harvested
+are used to calculate the conversion factor for unspecified resources. Analysts must
+develop a list of resources to use in this calculation for each unspecified resource.")
+
+newChunk <-c("```{r Calculate conversion factors for unspecified resources}
+
+REC03StdData %>% filter(is.na(convFact) & harvestq == 1) %>% 
+  ungroup() %>% 
+  select(commname:sUnits) %>% 
+  kable(caption = 'Unspecified resources that were harvested',
+        col.names = c('Community','Resource name', 'Conversion factor','Pounds to default','Default units','Given units'),
+        na = 'NA')
+
+# The list of unspecified resources (resCalcConvFactList) and the group of resources from which the conversion factor will be calculated (resGroupConvFactList) must be modified for each project and record type. NOTE: given units and default units must be consistent among all resources used in the calculation!
+
+# Example:
+
+# resCalcConvFactList <- list(410499000, # Unspecified geese 
+#                             421802990) # Unspecified grouses
+# 
+# resGroupConvFactList <- list(
+#   c(410406000, 410408000, 410410000, 410404990), # Other types of geese harvested
+#   c(421802020, 421802060, 421802040) # Other types of grouse harvested
+# )
+
+resCalcConvFactList <- list() # Unspecified resource
+
+resGroupConvFactList <- list(
+  c() # Other types harvested
+)
+
+calcConvFactData <- map2_dfr(
+  resCalcConvFactList,
+  resGroupConvFactList,
+  function(resCalcConvFact, resGroupConvFact) {
+    REC03StdData %>%
+      filter(resource %in% resGroupConvFact) %>%
+      rowwise() %>%
+      mutate(
+        reptHarvestAmt = sum(across(all_of(harvAmtList)), na.rm = TRUE),
+        reptHarvestLbs = reptHarvestAmt * convFact
+      ) %>%
+      filter(reptHarvestAmt > 0) %>%
+      group_by(communty) %>%
+      summarize(convFact = sum(reptHarvestLbs) / sum(reptHarvestAmt)) %>%
+      mutate(
+        lbsToDefault = 1 / convFact,
+        resource = resCalcConvFact,
+        source = 'Calculated'
+      ) %>%
+      left_join(convFactData, by = c('communty', 'resource')) %>%
+      select(
+        projID, studyear, communty, resName, resource, units, convFact.x, lbsToDefault.x, defaultUnits, source
+      ) %>%
+      rename(
+        convFact = convFact.x,
+        lbsToDefault = lbsToDefault.x
+      )
+  }
+)
+
+convFactData <- convFactData %>%
+  filter(!resource %in% unlist(resCalcConvFactList)) %>%
+  bind_rows(calcConvFactData) %>%
+  arrange(resource)
+
+```")
+
+insert_chunk_after(path = folders[2],
+                   after_chunk_label = "standardize units",
+                   new_header = newHeader,
+                   new_text =  newText,
+                   new_chunk = newChunk)
+
+
+
+```
+
