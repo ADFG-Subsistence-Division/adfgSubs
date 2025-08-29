@@ -1,7 +1,7 @@
 Package: adfgSubs
 Type: Package
 Title: ADF&G Subsistence Data Analysis Functions 
-Version: 0.4.0
+Version: 0.5.0
 Authors@R: c(
   person("Koster", "David", email = "david.koster@alaska.gov", role = c("aut")),
   person("Coleman", "Jesse", email = "jesse.coleman@alaska.gov", role = c("cre")))
