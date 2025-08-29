@@ -5,37 +5,57 @@ output: html_notebook
 
 ```{r Replace YAML header}
 
-folders <- c("C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 1 - Extraction and Validation",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 2 - Standardize and Validate",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Demographics",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 4 - Income and Employment",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 5 - Harvest processing",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 6 - Assessments and summary",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 7 - SNA")
+foldersDashboard <- c(
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 1 - Extraction and Validation",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 2 - Standardize and Validate",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Demographics",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 4 - Income and Employment",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 5 - Harvest processing",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 6 - Assessments and summary",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 7 - SNA")
 
 foldersYukonComps <- c(
   "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 1 - Extraction and Validation",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 2 - Standardize and Validate",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Demographics",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 4 - Income and Employment",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 5 - Harvest processing",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 6 - Assessments and summary",
-            "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 7 - SNA")
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 2 - Standardize and Validate",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 3 - Demographics",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 4 - Income and Employment",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 5 - Harvest processing",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 6 - Assessments and summary",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 7 - SNA")
   
+foldersAmbler <- c(
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-316/R-Code/Step 1 - Extraction and Validation",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-316/R-Code/Step 2 - Standardize and Validate",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-316/R-Code/Step 3 - Demographics",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-316/R-Code/Step 4 - Income and Employment",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-316/R-Code/Step 5 - Harvest processing",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-316/R-Code/Step 6 - Assessments and summary")
   
+foldersKivalina <-c(
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-313/R-Code/Step 1 - Extraction and Validation",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-313/R-Code/Step 2 - Standardize and Validate",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-313/R-Code/Step 3 - Demographics",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-313/R-Code/Step 4 - Income and Employment",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-313/R-Code/Step 5 - Harvest processing",
+  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-313/R-Code/Step 6 - Assessments and summary"
+)  
   
-  
-# all_files <- unlist(
-#   lapply(folders, function(dir) list.files(dir, pattern = "\\.Rmd$", full.names = TRUE, recursive = TRUE))
-# )
+filesKivalinaStep2 <- unlist(
+  lapply(foldersKivalina[2], function(dir) list.files(dir, pattern = "\\.Rmd$", full.names = TRUE, recursive = TRUE))
+)
+filesAmblerStep2 <- unlist(
+  lapply(foldersAmbler[2], function(dir) list.files(dir, pattern = "\\.Rmd$", full.names = TRUE, recursive = TRUE))
+)
 
+# Still duplicates HTML and I'm not sure why
 
 replaceYAML <- function(
   files = NULL,
   folders = NULL,
   pattern = "\\.Rmd$",
-  author = "Jesse Coleman",
-  date = "2025-08-11",
+  author = NULL,
+  date = NULL,
+  html_lines = NULL,
   output_lines = c(
     "  html_document:",
     "    theme: null",
@@ -44,7 +64,7 @@ replaceYAML <- function(
     "      before_body: ../HTML/header.html",
     "      after_body: ../HTML/footer.html"
   ),
-  suffix = "- (294) Yukon Comprehensives 2024"
+  suffix = NULL
 ) {
   # Collect files from folders if needed
   if (!is.null(folders)) {
@@ -65,10 +85,43 @@ replaceYAML <- function(
   for (i in seq_along(files)) {
     file <- files[i]
     res <- tryCatch({
+      
       lines <- readLines(file, warn = FALSE)
+      
       yaml_starts <- which(trimws(lines) == "---")
+      
+      file_base <- tools::file_path_sans_ext(basename(file))
+      # Construct html_lines if NULL
+      if (is.null(html_lines)) {
+        html_lines_use <- c(
+          '<div class="title-container">',
+          '  <img class="title-logo" src="../HTML/adfg_logo.png" alt="ADFG Logo"/>',
+          sprintf('  <div class="title">%s %s</div>', file_base, suffix),
+          "</div>"
+        )
+      } else {
+        html_lines_use <- html_lines
+      }
+
+      # Check if html_lines already exist (all lines must appear in sequence)
+      html_exists <- FALSE
+      if (length(html_lines_use) > 0) {
+        # Collapse file lines into a single string and check for the pattern
+        file_text <- paste(lines, collapse = "\n")
+        html_text <- paste(html_lines_use, collapse = "\n")
+        html_exists <- grepl(html_text, file_text, fixed = TRUE)
+      }
+      
+      # If html_lines already present, skip adding them
+      if (html_exists) {
+        html_lines_to_add <- character(0)
+        html_message <- "HTML already present"
+      } else {
+        html_lines_to_add <- html_lines_use
+        html_message <- "YAML and HTML replaced"
+      }
+
       if (length(yaml_starts) >= 2) {
-        file_base <- tools::file_path_sans_ext(basename(file))
         new_header <- c(
           "---",
           sprintf('title: "%s %s"', file_base, suffix),
@@ -77,10 +130,7 @@ replaceYAML <- function(
           "output:",
           output_lines,
           "---",
-          '<div class="title-container">',
-          '  <img class="title-logo" src="../HTML/adfg_logo.png" alt="ADFG Logo"/>',
-          sprintf('  <div class="title">%s %s</div>', file_base, suffix),
-          "</div>"
+          html_lines_to_add
         )
         before <- if (yaml_starts[1] > 1) lines[1:(yaml_starts[1] - 1)] else character(0)
         after <- lines[(yaml_starts[2] + 1):length(lines)]
@@ -88,7 +138,7 @@ replaceYAML <- function(
         writeLines(new_lines, file)
         message(sprintf("Updated: %s", file))
         results$status[i] <- "updated"
-        results$message[i] <- "YAML and HTML replaced"
+        results$message[i] <- html_message
       } else {
         warning(sprintf("YAML header not found: %s", file))
         results$status[i] <- "skipped"
@@ -103,11 +153,19 @@ replaceYAML <- function(
   invisible(results)
 }
 
-replaceYAML(folders = foldersYukonComps)
+replaceYAML(files = filesKivalinaStep2[c(5:15)],
+            author = c("Jesse Coleman"),
+            date = c("2025-08-18"),
+            suffix = c("- (313) SWG Kivalina Comprehensive"))
+
+replaceYAML(files = filesAmblerStep2,
+            author = c("Jesse Coleman"),
+            date = c("2025-08-19"),
+            suffix = c("- (316) NPS Ambler Comprehensive"))
 
 ```
 
-```{r Replace code chunks}
+```{r Replace code chunk}
 
 replaceCodeChunks <- function(
   path = ".",
@@ -164,34 +222,23 @@ replaceCodeChunks <- function(
 }
 
 
-newCode <- c("
-# Write out CSIS organized file.
-  fName = str_interp('../../CSV/03 - main/REC_PLACEHOLDER_CSIS_ORG_clean.csv')
-  cat(formatSummaryBlock(
-    paste('Writing file: ', fName, 
-          ' ', nrow(REC_PLACEHOLDERCSISData), ' records to be written', sep='')))
+newCode <- c("# Set some knit options and functions for formatting data.
+knitr::opts_chunk$set(echo = FALSE,
+                      include = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      results='asis')
 
-rio::export(REC_PLACEHOLDERCSISData, fName)
-
-# Write out unspecified resource conversion factor table for binding to convFact.csv
-  fName = str_interp('../../CSV/03 - main/REC_PLACEHOLDER_calc_convFact.csv')
-  cat(formatSummaryBlock(
-    paste('Writing file: ', fName, 
-          ' ', nrow(calcConvFactData), ' records to be written', sep='')))
-
-rio::export(calcConvFactData, fName)
-"
+options(knitr.kable.NA = '')"
 )
 
 
-replaceCodeChunks(path = folders[2],
-                  exclude = c("B01_PREP_SAMPLE.Rmd",
-                              "B02_PREP_PERSON.Rmd",
-                              "B03_PREP_CONVERSION_FACTOR.Rmd",
-                              "B13_PREP_REC24.Rmd",
-                              "B14_PREP_FOOD_SECURITY.Rmd",
-                              "F15_MAKE_ALL_RESOURCE_FILE.Rmd"),
-                  chunk_label = "write csv files",
+replaceCodeChunks(path = foldersAmbler,
+                  chunk_label = "setup",
+                  new_code = newCode)
+
+replaceCodeChunks(path = foldersKivalina,
+                  chunk_label = "setup",
                   new_code = newCode)
 ```
 
@@ -247,69 +294,7 @@ unspecified resources harvested, similar resources and the amounts/weights harve
 are used to calculate the conversion factor for unspecified resources. Analysts must
 develop a list of resources to use in this calculation for each unspecified resource.")
 
-newChunk <-c("```{r Calculate conversion factors for unspecified resources}
-
-REC03StdData %>% filter(is.na(convFact) & harvestq == 1) %>% 
-  ungroup() %>% 
-  select(commname:sUnits) %>% 
-  kable(caption = 'Unspecified resources that were harvested',
-        col.names = c('Community','Resource name', 'Conversion factor','Pounds to default','Default units','Given units'),
-        na = 'NA')
-
-# The list of unspecified resources (resCalcConvFactList) and the group of resources from which the conversion factor will be calculated (resGroupConvFactList) must be modified for each project and record type. NOTE: given units and default units must be consistent among all resources used in the calculation!
-
-# Example:
-
-# resCalcConvFactList <- list(410499000, # Unspecified geese 
-#                             421802990) # Unspecified grouses
-# 
-# resGroupConvFactList <- list(
-#   c(410406000, 410408000, 410410000, 410404990), # Other types of geese harvested
-#   c(421802020, 421802060, 421802040) # Other types of grouse harvested
-# )
-
-resCalcConvFactList <- list() # Unspecified resource
-
-resGroupConvFactList <- list(
-  c() # Other types harvested
-)
-
-calcConvFactData <- map2_dfr(
-  resCalcConvFactList,
-  resGroupConvFactList,
-  function(resCalcConvFact, resGroupConvFact) {
-    REC03StdData %>%
-      filter(resource %in% resGroupConvFact) %>%
-      rowwise() %>%
-      mutate(
-        reptHarvestAmt = sum(across(all_of(harvAmtList)), na.rm = TRUE),
-        reptHarvestLbs = reptHarvestAmt * convFact
-      ) %>%
-      filter(reptHarvestAmt > 0) %>%
-      group_by(communty) %>%
-      summarize(convFact = sum(reptHarvestLbs) / sum(reptHarvestAmt)) %>%
-      mutate(
-        lbsToDefault = 1 / convFact,
-        resource = resCalcConvFact,
-        source = 'Calculated'
-      ) %>%
-      left_join(convFactData, by = c('communty', 'resource')) %>%
-      select(
-        projID, studyear, communty, resName, resource, units, convFact.x, lbsToDefault.x, defaultUnits, source
-      ) %>%
-      rename(
-        convFact = convFact.x,
-        lbsToDefault = lbsToDefault.x
-      )
-  }
-)
-
-convFactData <- convFactData %>%
-  filter(!resource %in% unlist(resCalcConvFactList)) %>%
-  bind_rows(calcConvFactData) %>%
-  arrange(resource)
-
-```")
+newChunk <-c()
 
 insert_chunk_after(path = folders[2],
                    after_chunk_label = "standardize units",
@@ -321,3 +306,68 @@ insert_chunk_after(path = folders[2],
 
 ```
 
+```{r Find and delete text} 
+
+find_and_delete_text <- function(
+  files = NULL,
+  folders = NULL,
+  pattern = "\\.Rmd$",
+  text_to_delete,
+  fixed = TRUE,
+  recursive = TRUE,
+  verbose = TRUE
+) {
+  # Collect files from folders if specified
+  if (!is.null(folders)) {
+    files_from_folders <- unlist(
+      lapply(folders, function(dir) list.files(dir, pattern = pattern, full.names = TRUE, recursive = recursive))
+    )
+    files <- unique(c(files, files_from_folders))
+  }
+  files <- files[!is.na(files) & file.exists(files)] # filter valid files
+  if(length(files) == 0) {
+    if(verbose) message("No files found.")
+    return(invisible(NULL))
+  }
+
+  results <- data.frame(
+    file = files,
+    status = NA_character_,
+    message = NA_character_,
+    stringsAsFactors = FALSE
+  )
+
+  for (i in seq_along(files)) {
+    file <- files[i]
+    res <- tryCatch({
+      lines <- readLines(file, warn = FALSE)
+      # Remove lines containing the target text
+      to_remove <- grepl(text_to_delete, lines, fixed = fixed)
+      if(any(to_remove)) {
+        new_lines <- lines[!to_remove]
+        writeLines(new_lines, file)
+        if(verbose) message(sprintf("Deleted lines in: %s", file))
+        results$status[i] <- "updated"
+        results$message[i] <- sprintf("Deleted %d line(s)", sum(to_remove))
+      } else {
+        if(verbose) message(sprintf("No matching text found in: %s", file))
+        results$status[i] <- "skipped"
+        results$message[i] <- "No matching text"
+      }
+    }, error = function(e) {
+      warning(sprintf("Error processing %s: %s", file, e$message))
+      results$status[i] <- "error"
+      results$message[i] <- e$message
+    })
+  }
+  invisible(results)
+}
+
+
+find_and_delete_text(files = filesAmblerStep2,
+                     text_to_delete = c('<div class="title-container">
+  <img class="title-logo" src="../HTML/adfg_logo.png" alt="ADFG Logo"/>
+  <div class="title">B01_PREP_SAMPLE - (313) SWG Kivalina Comprehensive</div>
+</div>'))
+
+```

@@ -176,15 +176,20 @@ dfMeanReplaceStratified <- function(sourceData, replCols, checkCol = "filterq", 
       cat("NA count in community means:", sum(is.na(temp_data$community_mean)), "\n")
     }
 
-
-    # Prioritized replacement: original values → strata means → community means → minimum
+    # Prioritized replacement: original values → strata means → community means → minimum (special case: if community mean is zero, minimum is set to 1)
     temp_data[[col]] <- ifelse(!is.na(temp_data[[col]]),
                                temp_data[[col]],
                                ifelse(!is.na(temp_data$strata_mean),
                                       temp_data$strata_mean,
                                       ifelse(!is.na(temp_data$community_mean),
-                                             temp_data$community_mean,
-                                             min(temp_data[[col]]))))
+                                             # If community_mean is zero, set min value to 1
+                                             ifelse(temp_data$community_mean == 0,
+                                                    1,
+                                                    temp_data$community_mean),
+                                             min(temp_data[[col]], na.rm = TRUE)
+                                      )
+                               )
+    )
 
     # Return the modified column to the source data
     sourceData[[col]] <- temp_data[[col]] %>% round(digits = 2)
@@ -200,7 +205,6 @@ dfMeanReplaceStratified <- function(sourceData, replCols, checkCol = "filterq", 
 
   return(sourceData)
 }
-
 ### THIS IS AN INCOMPLETE FUNCTION ----
 #
 # meanReplace <- function(sourceData, projectKeyList=c("projID","studyear","communty"),

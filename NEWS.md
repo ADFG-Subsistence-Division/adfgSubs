@@ -1,3 +1,6 @@
+# adfgSubs 0.5.0
+* Fixed dfMeanReplaceStratified() to use 1 as minimum in the event that the community mean is zero.
+
 # adfgSubs 0.4.0
 *Fixed standardizeConversionFactors() to resolve issue with double converting resources whose standard units are 'lb' (e.g., Pacific halibut)
 

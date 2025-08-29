@@ -1,0 +1,61 @@
+---
+title: "Custom Pie Chart Function"
+output: html_notebook
+---
+
+```{r}
+adfgPie <- function(
+  df,
+  value_col = "value",
+  percent_col = "percent",
+  commname_col = "commname",
+  category_col = "category",
+  label_col = "label",
+  colors = NULL,
+  main = NULL,
+  font_family = "Times New Roman",
+  font_size = 1,
+  leader_line_col = "gray50",
+  leader_line_len = 1.2
+) {
+  # Extract values and labels from data frame
+  values <- df[[value_col]]
+  percents <- df[[percent_col]]
+  commnames <- df[[commname_col]]
+  categories <- df[[category_col]]
+  labels <- df[[label_col]]
+  
+  # Set default colors if not supplied
+  if (is.null(colors)) {
+    colors <- rainbow(length(values))
+  }
+  
+  # Register font for Windows users
+  if (.Platform$OS.type == "windows") {
+    windowsFonts(TimesNewRoman = windowsFont(font_family))
+    par(family = "TimesNewRoman", cex = font_size)
+  } else {
+    par(family = font_family, cex = font_size)
+  }
+  
+  # Draw pie without labels
+  pie(values, labels = NA, col = colors, main = main, radius = 1, border = NA)
+  
+  # Calculate label positions for leader lines
+  angle <- cumsum(c(0, values / sum(values))) * 2 * pi
+  label_pos <- (angle[-length(angle)] + angle[-1]) / 2
+  x0 <- cos(label_pos) * 0.8
+  y0 <- sin(label_pos) * 0.8
+  x1 <- cos(label_pos) * leader_line_len
+  y1 <- sin(label_pos) * leader_line_len
+  
+  # Draw leader lines
+  segments(x0, y0, x1, y1, col = leader_line_col, lwd = 1.5)
+  
+  # Place labels at the end of leader lines
+  text(x1, y1, labels, cex = font_size)
+  
+  # Reset graphics parameters
+  par(family = "", cex = 1)
+}
+```
