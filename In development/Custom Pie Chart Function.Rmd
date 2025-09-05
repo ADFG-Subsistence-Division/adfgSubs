@@ -4,7 +4,7 @@ output: html_notebook
 ---
 
 ```{r}
-adfgPie <- function(
+pieSubs <- function(
   df,
   value_col = "value",
   percent_col = "percent",

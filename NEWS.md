@@ -1,3 +1,6 @@
+# adfgSubs 0.6.0
+* Added plotting functions for boxplots and pie charts, and themeSubs for use with ggplot
+
 # adfgSubs 0.5.0
 * Fixed dfMeanReplaceStratified() to use 1 as minimum in the event that the community mean is zero.
 
