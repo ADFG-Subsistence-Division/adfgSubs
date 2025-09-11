@@ -15,8 +15,8 @@ foldersDashboard <- c(
   "C:/Users/jmcoleman2/Documents/GitHub/Analysis-Dashboard-Template-2025/R-Code/Step 7 - SNA")
 
 foldersYukonComps <- c(
-  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 1 - Extraction and Validation",
-  "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 2 - Standardize and Validate",
+  # "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 1 - Extraction and Validation",
+  # "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 2 - Standardize and Validate",
   "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 3 - Demographics",
   "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 4 - Income and Employment",
   "C:/Users/jmcoleman2/Documents/GitHub/Analysis-294-2024/R-Code/Step 5 - Harvest processing",
@@ -240,6 +240,12 @@ replaceCodeChunks(path = foldersAmbler,
 replaceCodeChunks(path = foldersKivalina,
                   chunk_label = "setup",
                   new_code = newCode)
+
+replaceCodeChunks(path = foldersYukonComps,
+                  chunk_label = "setup",
+                  new_code = newCode)
+
+
 ```
 
 ```{r Insert code chunk}
@@ -371,3 +377,19 @@ find_and_delete_text(files = filesAmblerStep2,
 </div>'))
 
 ```
+
+```{r Batch knit to PDF}
+
+library(tinytex)
+library(tidyverse)
+library(purrr)
+library(fs) # for file system operations (optional but convenient)
+
+# Find all .Rmd files in the specified folders
+files <- map(foldersYukonComps, ~ dir_ls(.x, regexp = "\\.Rmd$", recurse = FALSE)) %>% 
+  flatten_chr()
+
+# Render each .Rmd file to PDF
+walk(files, ~ rmarkdown::render(.x, output_format = "html_document"))
+```
+
