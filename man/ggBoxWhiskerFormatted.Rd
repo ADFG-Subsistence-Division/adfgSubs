@@ -2,7 +2,7 @@
 % Please edit documentation in R/f_plottingFunctions.R
 \name{ggBoxWhiskerFormatted}
 \alias{ggBoxWhiskerFormatted}
-\title{ggBoxWhiskerFormatted}
+\title{Box and whisker plot a la adfgSubs}
 \usage{
 ggBoxWhiskerFormatted(
   figData,

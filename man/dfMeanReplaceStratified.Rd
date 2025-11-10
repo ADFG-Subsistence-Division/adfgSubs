@@ -2,7 +2,7 @@
 % Please edit documentation in R/f_meanReplacement.R
 \name{dfMeanReplaceStratified}
 \alias{dfMeanReplaceStratified}
-\title{dfMeanReplaceStratified}
+\title{Replace missing column values in a data frame}
 \usage{
 dfMeanReplaceStratified(
   sourceData,

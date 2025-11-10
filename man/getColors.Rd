@@ -2,7 +2,7 @@
 % Please edit documentation in R/f_plottingFunctions.R
 \name{getColors}
 \alias{getColors}
-\title{getColors}
+\title{Get adfgSubs standard plotting colors}
 \usage{
 getColors(palName = "Spectral", nColors = 1, override = FALSE)
 }

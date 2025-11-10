@@ -2,7 +2,7 @@
 % Please edit documentation in R/f_plottingFunctions.R
 \name{themeSubs}
 \alias{themeSubs}
-\title{themeSubs}
+\title{Apply adfgSubs plot theme}
 \usage{
 themeSubs(base_size = 12, base_family = "serif")
 }

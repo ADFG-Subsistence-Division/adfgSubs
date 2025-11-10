@@ -2,7 +2,7 @@
 % Please edit documentation in R/f_plottingFunctions.R
 \name{pieSubs}
 \alias{pieSubs}
-\title{pieSubs}
+\title{adfgSubs themed pie charts}
 \usage{
 pieSubs(
   df,

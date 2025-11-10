@@ -2,19 +2,19 @@
 % Please edit documentation in R/f_meanReplacement.R
 \name{meanReplaceStratified}
 \alias{meanReplaceStratified}
-\title{meanReplaceStratified}
+\title{Replace missing values in a specified column}
 \usage{
 meanReplaceStratified(sourceData, replCol, checkCol = "harvestq")
 }
 \arguments{
-\item{sourceData}{A data frame containing multiple variables.}
+\item{sourceData}{A data frame}
 
 \item{replCol}{A vector containing the variables from sourceData for which values will be mean replaced.}
 
 \item{checkCol}{Description}
 }
 \value{
-A modified column containing mean replaced values.
+A modified column or set of columns containing mean replaced values; must be bound to original data frame (if desired).
 }
 \description{
 Simple mean replacement for a stratified sample. This function REQUIRES that
