@@ -1,3 +1,3 @@
 # adfgSubs 0.7.0
 
-* Initial CRAN submission.
+* Added functions to combine CIs and estimates, and mean replace variables using mutate(across(...))
