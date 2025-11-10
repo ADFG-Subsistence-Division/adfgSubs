@@ -1,4 +1,4 @@
-#' meanReplaceStratified
+#' Replace missing values in a specified column
 #'
 #' @description
 #' Simple mean replacement for a stratified sample. This function REQUIRES that
@@ -15,10 +15,10 @@
 #'   "some amount, amount unknown" ie: harvestq == 1, then minimum replacement
 #'   occurs, if not then the community mean is supplied regardless.
 #'
-#' @param sourceData A data frame containing multiple variables.
+#' @param sourceData A data frame
 #' @param replCol A vector containing the variables from sourceData for which values will be mean replaced.
 #' @param checkCol Description
-#' @returns A modified column containing mean replaced values.
+#' @returns A modified column or set of columns containing mean replaced values; must be bound to original data frame (if desired).
 #'
 #' @export
 
@@ -83,7 +83,55 @@ meanReplaceStratified <- function(sourceData, replCol, checkCol = "harvestq")
   return(coalesce(sourceData$meanReplaced, sourceData$minimumReplace))
 }
 
-#' dfMeanReplaceStratified
+
+#' Mean replace values for use with mutate(across(...))
+#'
+#' This function imputes missing values in a numeric vector (e.g., survey data) using stratified means and then community means. If both mean imputations fail, a minimum replacement is used based on a check column. This is typically used to replace missing or invalid values in household-level resource survey data.
+#'
+#' @param repl_col Numeric vector. The column to be mean replaced (e.g., observed values with possible NAs).
+#' @param strata Vector (factor, character, or integer). Identifies strata for stratified mean imputation.
+#' @param commhh Vector. Community household identifier, or grouping used for estimation at the community level.
+#' @param NHouseholds Numeric or integer vector. The number of households in each group (typically reused per row).
+#' @param checkCol Numeric or integer vector. Used to determine minimum replacement (1 if >0 and not NA, else 0).
+#'
+#' @return A numeric vector of the same length as \code{repl_col}, containing the mean-replaced or imputed values.
+#' @export
+#'
+#' @examples
+#'
+#' df <- tibble(strata = c("A","A","A","B","B","B"),
+#'              commhh = c(99,99,99,53,53,53),
+#'              NHouseholds = c(99,99,99,53,53,53),
+#'              col1 = c(1, NA, 7, 2, 4, NA),
+#'              col2 = c(18, 39, NA, 109, NA, 44),
+#'              checkCol = c(1,1,1,1,1,1))
+#'
+#' replCols <- c("col1","col2")
+#'
+#' suffix <- c("MR")
+#'
+#' # Usage:
+#'  df %>%
+#'     mutate(across(replCols, ~ meanReplaceColumn(.x, strata, commhh, NHouseholds, checkCol = "checkCol"),
+#'     .names = paste0("{.col}_", suffix)))
+
+
+meanReplaceColumn <- function(repl_col, strata, commhh, NHouseholds, checkCol) {
+  mMean <- ave(repl_col, strata, FUN = function(x) mean(x, na.rm = TRUE))
+  mMean[mMean == 0] <- NA
+  meanReplaced <- dplyr::coalesce(repl_col, mMean)
+  strataEst <- mMean * commhh
+  commEst <- ave(strataEst, commhh, FUN = function(x) sum(x, na.rm = TRUE))
+  cnt <- ave(repl_col, strata, FUN = function(x) length(x))
+  cMean <- commEst / NHouseholds / cnt
+  cMean[cMean == 0] <- NA
+  meanReplaced <- dplyr::coalesce(meanReplaced, cMean)
+  minimumReplace <- ifelse(is.na(checkCol) | checkCol <= 0, 0, 1)
+  dplyr::coalesce(meanReplaced, minimumReplace)
+}
+
+
+#' Replace missing column values in a data frame
 #'
 #' @description
 #' Simple mean replacement for a stratified sample. This function REQUIRES that

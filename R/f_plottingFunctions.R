@@ -1,4 +1,4 @@
-#' ggBoxWhiskerFormatted
+#' Box and whisker plot a la adfgSubs
 #'
 #' Function for producing ggplot outputs according to current ADF&G Division of Subsistence standards.
 #'
@@ -62,7 +62,7 @@ ggBoxWhiskerFormatted <- function(figData, categoryColName, dataColName, yAxisTi
 }
 
 
-#' themeSubs
+#' Apply adfgSubs plot theme
 #'
 #' A ggplot2 theme to mimick tables and figures produced in Excel.
 #'
@@ -81,10 +81,11 @@ themeSubs <- function(base_size = 12, base_family = "serif") {
       axis.ticks = element_line(size = 0.5, color = "black"),
       axis.text = element_text(color = "black", family = base_family, size = base_size),
       axis.title = element_text(color = "black", family = base_family, size = base_size + 2),
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1), # for bar plots
+      axis.text.x = element_text(hjust = 1, vjust = 1), # for bar plots
 
       # Grid lines
-      panel.grid.major = element_line(color = "#E5E5E5", size = 0.5),
+      panel.grid.major.y = element_line(color = "#E5E5E5", size = 0.5),
+      panel.grid.major.x = element_blank(),
       panel.grid.minor = element_blank(),
 
       # Backgrounds
@@ -109,7 +110,7 @@ themeSubs <- function(base_size = 12, base_family = "serif") {
     )
 }
 
-#' getColors
+#' Get adfgSubs standard plotting colors
 #'
 #' Helper function for color palettes. This function provides a way for
 #'  analysts to do a better job of customizing colors per-project,
@@ -152,7 +153,7 @@ getColors <- function(palName = "Spectral", nColors = 1, override = FALSE)
     return(pal[1:nColors])
 }
 
-#' pieSubs
+#' adfgSubs themed pie charts
 #'
 #' A function to create custom pie charts with base R. This is an alternative to
 #' ggplot's coord_polar() transformation, which doesn't always lend itself to
