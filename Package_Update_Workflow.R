@@ -60,5 +60,5 @@ pkgdown::build_site()
 
 # Reinstall updated package from github
 
-devtools::install_github("ADFG-Subsistence-Division/adfgSubs")
+devtools::install_github("ADFG-Subsistence-Division/adfgSubs", upgrade = "never")
 
