@@ -11,8 +11,8 @@ The goal of adfgSubs is to ...
 You can install the development version of adfgSubs from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("pak")
-pak::pak("ADFG-Subsistence-Division/adfgSubs")
+# install.packages("devtools")
+devtools::install_github("ADFG-Subsistence-Division/adfgSubs", upgrade = "never")
 ```
 
 ## Example
