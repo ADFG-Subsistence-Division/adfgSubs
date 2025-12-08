@@ -10,7 +10,7 @@
 #' @param footnote_general Optional general footnote.
 #' @param footnote_symbol Optional symbol footnote.
 #' @return A kableExtra table object.
-#' @importFrom knitr kbl
+#' @importFrom knitr kable
 #' @importFrom kableExtra kable_styling column_spec row_spec add_header_above footnote
 #' @examples
 #'adfgKbl(df,

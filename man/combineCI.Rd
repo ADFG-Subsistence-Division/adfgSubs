@@ -4,7 +4,7 @@
 \alias{combineCI}
 \title{Combine multiple estimates and confidence intervals}
 \usage{
-combineCI(est, lower, upper, conf_level = 0.95)
+combineCI(est, lower, upper, conf_level = 0.95, method = c("sum", "mean"))
 }
 \arguments{
 \item{est}{A column containing the estimates to be combined}
@@ -14,6 +14,8 @@ combineCI(est, lower, upper, conf_level = 0.95)
 \item{upper}{A column containing the upper confidence bounds to be combined}
 
 \item{conf_level}{The desired confidence level for the combined interval (default is 0.95)}
+
+\item{method}{The method used to combine estimates; "mean" or "sum"}
 }
 \value{
 A tibble with combined estimate and confidence interval

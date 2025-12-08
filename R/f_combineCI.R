@@ -6,6 +6,7 @@
 #' @param lower A column containing the lower confidence bounds to be combined
 #' @param upper A column containing the upper confidence bounds to be combined
 #' @param conf_level The desired confidence level for the combined interval (default is 0.95)
+#' @param method The method used to combine estimates; "mean" or "sum"
 #'
 #' @returns A tibble with combined estimate and confidence interval
 #' @export
@@ -30,7 +31,7 @@
 # # Use in summarize
 # df_summary <- df %>%
 #   group_by(group) %>%
-#   summarize(out = list(combineCI(est, lower, upper)),
+#   summarize(out = list(combineCI(est, lower, upper, method = "sum")),
 #             .groups = 'drop') %>%
 #   unnest_wider(out)
 #
@@ -43,13 +44,22 @@
 # 2 B        6.5  3.51  9.49
 
 
-combineCI <- function(est, lower, upper, conf_level = 0.95) {
+combineCI <- function(est, lower, upper, conf_level = 0.95, method = c("sum", "mean")) {
+  method <- match.arg(method)
   z <- qt(1 - (1 - conf_level) / 2, df = Inf)
   se <- (upper - lower) / (2 * z)
-  est_sum <- sum(est, na.rm = TRUE)
-  se_sum <- sqrt(sum(se^2, na.rm = TRUE))
-  lower_sum <- est_sum - z * se_sum
-  upper_sum <- est_sum + z * se_sum
-  tibble(estimate = est_sum, lower = lower_sum, upper = upper_sum)
+
+  if (method == "sum") {
+    est_out <- sum(est, na.rm = TRUE)
+    se_out <- sqrt(sum(se^2, na.rm = TRUE))
+  } else if (method == "mean") {
+    est_out <- mean(est, na.rm = TRUE)
+    # Pool the variances, take sqrt, then scale for mean
+    se_out <- sqrt(sum(se^2, na.rm = TRUE)) / length(est)
+  }
+
+  lower_out <- est_out - z * se_out
+  upper_out <- est_out + z * se_out
+  tibble::tibble(estimate = est_out, lower = lower_out, upper = upper_out)
 }
 
