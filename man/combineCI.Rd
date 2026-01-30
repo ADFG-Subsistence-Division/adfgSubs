@@ -21,7 +21,7 @@ combineCI(est, lower, upper, conf_level = 0.95, method = c("sum", "mean"))
 A tibble with combined estimate and confidence interval
 }
 \description{
-Creates a combined estimate and confidence interval from individual estimates and their confidence intervals.
+Creates a combined estimate and confidence bounds from individual estimates and their confidence bounds
 }
 \examples{
 # Example usage:

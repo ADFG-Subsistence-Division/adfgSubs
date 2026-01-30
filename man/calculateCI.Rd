@@ -2,7 +2,7 @@
 % Please edit documentation in R/f_summarizeSubsData.R
 \name{calculateCI}
 \alias{calculateCI}
-\title{calculateCI}
+\title{Estimate confidence intervals}
 \usage{
 calculateCI(x, conf_level = 0.95, N = NULL)
 }
@@ -17,5 +17,5 @@ calculateCI(x, conf_level = 0.95, N = NULL)
 The lower CI bound, the upper CI bound, and the relative margin of error
 }
 \description{
-calculateCI
+Estimate confidence intervals
 }

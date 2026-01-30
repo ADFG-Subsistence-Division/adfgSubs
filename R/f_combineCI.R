@@ -1,6 +1,6 @@
 #' Combine multiple estimates and confidence intervals
 #'
-#' Creates a combined estimate and confidence interval from individual estimates and their confidence intervals.
+#' Creates a combined estimate and confidence bounds from individual estimates and their confidence bounds
 #'
 #' @param est A column containing the estimates to be combined
 #' @param lower A column containing the lower confidence bounds to be combined
@@ -45,7 +45,20 @@
 
 
 combineCI <- function(est, lower, upper, conf_level = 0.95, method = c("sum", "mean")) {
+
+  # Check mismatched vector lengths
+  if (!(length(est) == length(lower) && length(lower) == length(upper))) {
+    stop("Arguments 'est', 'lower', and 'upper' must all be the same length.")
+  }
+
+  # Check non-numeric arguments
+  if (!is.numeric(est) || !is.numeric(lower) || !is.numeric(upper)) {
+    stop("Arguments 'est', 'lower', and 'upper' must all be numeric vectors.")
+  }
+
+  # Validate method
   method <- match.arg(method)
+
   z <- qt(1 - (1 - conf_level) / 2, df = Inf)
   se <- (upper - lower) / (2 * z)
 

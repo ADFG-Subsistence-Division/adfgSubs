@@ -1,4 +1,4 @@
-#' adfgKbl: Generic kableExtra styling for grouped tables
+#' kblSubs: Generic kableExtra styling for grouped tables
 #'
 #' @param df Data frame.
 #' @param group_rows Character vector of row labels to treat as section headers (bolded, optional border).
@@ -13,14 +13,14 @@
 #' @importFrom knitr kable
 #' @importFrom kableExtra kable_styling column_spec row_spec add_header_above footnote
 #' @examples
-#'adfgKbl(df,
+#'kblSubs(df,
 #'        group_rows = c("Total","Subtotal"),
 #'        group_col_start = 2,
 #'        group_col_end = 13,
 #'        group_col_label = "Month",
 #'        resource_col = 1)
 
-adfgKbl <- function(
+kblSubs <- function(
     df,
     group_rows,
     group_col_start,

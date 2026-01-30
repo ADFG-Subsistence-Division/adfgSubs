@@ -1,4 +1,4 @@
-#' calculateCI
+#' Estimate confidence intervals
 #'
 #' @param x An estimated variable for which confidence intervals are to be created.
 #' @param conf_level The desired confidence level for the estimate.
@@ -107,6 +107,8 @@ getSubsStratifiedSurveyEstimate <- function(
 #' @param N_col A column in the data frame with the total number of households (N).
 #' @param addvariables Logical; should the columns containing descriptive statistics
 #' and the estimate be returned in addition to the summarized data frame? Default is 'FALSE'.
+#'
+#' @importFrom dplyr rename group_by mutate summarise across ungroup group_keys cur_group_id
 #'
 #' @returns A data frame with summarized variables.
 #'
