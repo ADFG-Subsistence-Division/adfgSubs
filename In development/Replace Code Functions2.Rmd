@@ -380,71 +380,70 @@ find_and_delete_text(files = filesAmblerStep2,
 
 ```{r Find and replace text}
 
-find_and_replace_text <- function(
-  files = NULL,
-  folders = NULL,
-  pattern = "\\.Rmd$",
-  find,
-  replace,
-  fixed = TRUE,
-  recursive = TRUE,
-  verbose = TRUE
+findAndReplaceText2 <- function(
+    files = NULL,
+    folders = NULL,
+    pattern = "\\.Rmd$",
+    find,
+    replace,
+    fixed = TRUE,
+    recursive = TRUE,
+    verbose = TRUE
 ) {
-  # Check arguments
-  if (length(find) != length(replace)) {
-    stop("'find' and 'replace' must be the same length.")
-  }
-  if (!is.character(find) || !is.character(replace)) {
-    stop("'find' and 'replace' must be character vectors.")
-  }
-
-  # Collect files from folders if specified
-  if (!is.null(folders)) {
-    files_from_folders <- unlist(
-      lapply(folders, function(dir) list.files(dir, pattern = pattern, full.names = TRUE, recursive = recursive))
+    if (length(find) != length(replace)) {
+        stop("'find' and 'replace' must be the same length.")
+    }
+    if (!is.character(find) || !is.character(replace)) {
+        stop("'find' and 'replace' must be character vectors.")
+    }
+    if (!is.null(folders)) {
+        files_from_folders <- unlist(lapply(folders, function(dir) {
+            list.files(dir, pattern = pattern, full.names = TRUE, recursive = recursive)
+        }))
+        files <- unique(c(files, files_from_folders))
+    }
+    files <- files[!is.na(files) & file.exists(files)]
+    if (length(files) == 0) {
+        if (verbose)
+            message("No files found.")
+        return(invisible(NULL))
+    }
+    results <- data.frame(
+        file = files,
+        status = NA_character_,
+        message = NA_character_,
+        stringsAsFactors = FALSE
     )
-    files <- unique(c(files, files_from_folders))
-  }
-  files <- files[!is.na(files) & file.exists(files)] # filter valid files
-  if(length(files) == 0) {
-    if(verbose) message("No files found.")
-    return(invisible(NULL))
-  }
-
-  results <- data.frame(
-    file = files,
-    status = NA_character_,
-    message = NA_character_,
-    stringsAsFactors = FALSE
-  )
-
-  for (i in seq_along(files)) {
-    file <- files[i]
-    res <- tryCatch({
-      lines <- readLines(file, warn = FALSE)
-      original_lines <- lines
-      # Apply replacements, pairwise
-      for (j in seq_along(find)) {
-        lines <- gsub(find[j], replace[j], lines, fixed = fixed)
-      }
-      changed <- !identical(original_lines, lines)
-      if (changed) {
-        writeLines(lines, file)
-        if (verbose) message(sprintf("Replaced text in: %s", file))
-        results$status[i] <- "updated"
-        results$message[i] <- "Text replaced"
-      } else {
-        if (verbose) message(sprintf("No matching text found in: %s", file))
-        results$status[i] <- "skipped"
-        results$message[i] <- "No matching text"
-      }
-    }, error = function(e) {
-      warning(sprintf("Error processing %s: %s", file, e$message))
-      results$status[i] <- "error"
-      results$message[i] <- e$message
-    })
-  }
-  invisible(results)
+    for (i in seq_along(files)) {
+        file <- files[i]
+        res <- tryCatch({
+            file_content <- paste(readLines(file, warn = FALSE), collapse = "\n")
+            original_content <- file_content
+            for (j in seq_along(find)) {
+                # When fixed=FALSE, use perl=TRUE for multiline regex with (?s)
+                file_content <- gsub(find[j], replace[j], file_content,
+                                    fixed = fixed, perl = !fixed)
+            }
+            changed <- !identical(original_content, file_content)
+            if (changed) {
+                writeLines(strsplit(file_content, "\n")[[1]], file)
+                if (verbose)
+                    message(sprintf("Replaced text in: %s", file))
+                results$status[i] <- "updated"
+                results$message[i] <- "Text replaced"
+            } else {
+                if (verbose)
+                    message(sprintf("No matching text found in: %s", file))
+                results$status[i] <- "skipped"
+                results$message[i] <- "No matching text"
+            }
+        }, error = function(e) {
+            warning(sprintf("Error processing %s: %s", file, e$message))
+            results$status[i] <- "error"
+            results$message[i] <- e$message
+        })
+    }
+    invisible(results)
 }
 
 find_and_replace_text(
