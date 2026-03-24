@@ -168,3 +168,96 @@ getSubsSurveyEstimate <- function(data,
     ), .names = "{.col}_{.fn}"), .groups = "drop")
   return(summarized_data)
 }
+
+#' Safely return maximum value
+#'
+#' @param x
+#' @param na.rm
+#'
+#' @returns The maximum value from a vector; returns NA if all values are NA.
+#' @export
+#'
+#' @examples
+#'
+#' library(dplyr)
+#'
+#' df <- data.frame(g = c(1,1,2,2), val = c(NA, NA, 2, NA))
+#' df %>%
+#'   group_by(g) %>%
+#'   summarise(
+#'     my_min = safeMin(val),
+#'     my_max = safeMax(val),
+#'     my_sum = safeSum(val)
+#'   )
+#'
+#' # A tibble: 2 × 4
+#'      g      my_min my_max my_sum
+#'      <dbl>  <dbl>  <dbl>  <dbl>
+#' 1     1     NA     NA     NA
+#' 2     2      2      2      2
+#'
+
+
+safeMax <- function(x, na.rm=TRUE)
+{if(all(is.na(x))) NA else max(x, na.rm=na.rm)}
+
+#' Safely return minimum value
+#'
+#' @param x
+#' @param na.rm
+#'
+#' @returns The minimum value from a vector; returns NA if all values are NA.
+#' @export
+#'
+#' @examples
+#'
+#' library(dplyr)
+#'
+#' df <- data.frame(g = c(1,1,2,2), val = c(NA, NA, 2, NA))
+#' df %>%
+#'   group_by(g) %>%
+#'   summarise(
+#'     my_min = safeMin(val),
+#'     my_max = safeMax(val),
+#'     my_sum = safeSum(val)
+#'   )
+#'
+#' # A tibble: 2 × 4
+#'      g      my_min my_max my_sum
+#'      <dbl>  <dbl>  <dbl>  <dbl>
+#' 1     1     NA     NA     NA
+#' 2     2      2      2      2
+#'
+safeMin <- function(x, na.rm=TRUE)
+{if(all(is.na(x))) NA else min(x, na.rm=na.rm)}
+
+
+#' Safely return sum of values
+#'
+#' @param x
+#' @param na.rm
+#'
+#' @returns The sum of values in a vector; returns NA if all values are NA.
+#' @export
+#'
+#' @examples
+#'
+#' library(dplyr)
+#'
+#' df <- data.frame(g = c(1,1,2,2), val = c(NA, NA, 2, NA))
+#' df %>%
+#'   group_by(g) %>%
+#'   summarise(
+#'     my_min = safeMin(val),
+#'     my_max = safeMax(val),
+#'     my_sum = safeSum(val)
+#'   )
+#'
+#' # A tibble: 2 × 4
+#'      g      my_min my_max my_sum
+#'      <dbl>  <dbl>  <dbl>  <dbl>
+#' 1     1     NA     NA     NA
+#' 2     2      2      2      2
+#'
+safeSum <- function(x, na.rm=TRUE)
+  {if(all(is.na(x))) NA else sum(x, na.rm=na.rm)}

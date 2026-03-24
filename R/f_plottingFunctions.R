@@ -64,51 +64,43 @@ ggBoxWhiskerFormatted <- function(figData, categoryColName, dataColName, yAxisTi
 
 #' Apply adfgSubs plot theme
 #'
-#' A ggplot2 theme to mimick tables and figures produced in Excel.
+#' A ggplot2 theme to mimic tables and figures produced in Excel.
 #'
-#' @param base_size Font size; defaults to 12 point.
-#' @param base_family Font family; defaults to "serif".
+#' @param base_size Font size; defaults to 10 point.
+#' @param base_family Font family; defaults to "Times New Roman".
 #'
-#' @returns Nothing
+#' @returns No return value. Called for its side effect (applies ggplot formatting)
 #' @export
 #'
-
-themeSubs <- function(base_size = 12, base_family = "serif") {
+themeSubs <- function (base_size = 10, base_family = "Times New Roman")
+{
   theme_minimal(base_size = base_size, base_family = base_family) %+replace%
-    theme(
-      # Axis lines and ticks
-      axis.line = element_line(size = 0.5, color = "black"),
-      axis.ticks = element_line(size = 0.5, color = "black"),
-      axis.text = element_text(color = "black", family = base_family, size = base_size),
-      axis.title = element_text(color = "black", family = base_family, size = base_size + 2),
-      axis.text.x = element_text(hjust = 1, vjust = 1), # for bar plots
+    theme(axis.line = element_blank(),
+          axis.ticks = element_blank(),
+          axis.text = element_text(color = "black", family = base_family, size = base_size),
+          axis.title = element_text(color = "black",family = base_family, size = base_size),
+          axis.text.x = element_text(hjust = 0.5, vjust = 0.4),
+          axis.title.y = element_text(margin = margin(r = 10), angle = 90),
 
-      # Grid lines
-      panel.grid.major.y = element_line(color = "#E5E5E5", size = 0.5),
-      panel.grid.major.x = element_blank(),
-      panel.grid.minor = element_blank(),
+          panel.grid.major.y = element_line(color = "#d9d9d9", linewidth = 0.25),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_rect(fill = "white", color = NA),
+          panel.border = element_blank(),
 
-      # Backgrounds
-      panel.background = element_rect(fill = "white", color = NA),
-      plot.background = element_rect(fill = "white", color = NA),
-      panel.border = element_blank(),
+          legend.background = element_rect(fill = "white", color = NA),
+          legend.key = element_rect(fill = "white", color = NA),
+          legend.title = element_text(family = base_family, face = "plain"),
+          legend.text = element_text(family = base_family),
+          legend.position = "bottom", strip.background = element_rect(fill = "white", color = NA),
 
-      # Legend
-      legend.background = element_rect(fill = "white", color = NA),
-      legend.key = element_rect(fill = "white", color = NA),
-      legend.title = element_text(family = base_family, face = "plain"),
-      legend.text = element_text(family = base_family),
-      legend.position = "bottom",
+          strip.text = element_text(family = base_family, size = base_size),
 
-      # Strip for facets
-      strip.background = element_rect(fill = "white", color = NA),
-      strip.text = element_text(family = base_family, size = base_size + 2),
-
-      # Plot title
-      plot.title = element_text(family = base_family, hjust = 0.5, size = base_size + 4),
-      plot.subtitle = element_text(family = base_family, hjust = 0.5)
-    )
+          plot.background = element_rect(fill = "white", color = NA),
+          plot.title = element_text(family = base_family, hjust = 0.5, size = base_size),
+          plot.subtitle = element_text(family = base_family, hjust = 0.5))
 }
+
 
 #' Get adfgSubs standard plotting colors
 #'

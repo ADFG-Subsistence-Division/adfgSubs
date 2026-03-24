@@ -1,0 +1,78 @@
+---
+title: "Replace YAML"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+if (!requireNamespace("diffobj", quietly = TRUE)) {
+  install.packages("diffobj")
+}
+library(diffobj)
+
+replaceYamlHeader <- function(fileName, author = "D. S. Koster", date = "2024-09-06", doWrite = FALSE) {
+  lines <- readLines(fileName, warn = FALSE)
+  
+  # Find the first level-1 heading, safely
+  h1Indices <- which(grepl("^# ", lines))
+  if (length(h1Indices) == 0) {
+    message(sprintf("No level-1 heading found in %s; skipping.", fileName))
+    return(NULL)
+  }
+  firstH1Index <- h1Indices[1]
+  
+  # Extract label from file name
+  label <- tools::file_path_sans_ext(basename(fileName))
+  
+  # Build new YAML + HTML header
+  yamlHeader <- c(
+    "---",
+    sprintf('title: "%s - (000) Template Code 2026"', label),
+    sprintf('author: "%s"', author),
+    sprintf('date: "%s"', date),
+    "output:",
+    "   html_document:",
+    "    theme: null",
+    "    css: ../HTML/adfg-style.css",
+    "    include:",
+    "      before_body: ../HTML/header.html",
+    "      after_body: ../HTML/footer.html",
+    "---",
+    '<div class="title-container">',
+    '  <img class="title-logo" src="../HTML/adfg_logo.png" alt="ADFG Logo"/>',
+    sprintf('  <div class="title">%s - (000) Template Code 2026</div>', label),
+    '</div>',
+    "" # blank line for separation
+  )
+  
+  # Use seq() to avoid warnings regardless of values
+  contentLines <- lines[seq(from = firstH1Index, to = length(lines))]
+  
+  # Combine new header with the remainder of the file
+  newLines <- c(
+    yamlHeader,
+    contentLines
+  )
+  
+  # Show diff for dry run
+  cat(sprintf("\n====== Preview diff for: %s ======\n", basename(fileName)))
+  diff <- diffobj::diffChr(lines, newLines, format = "raw")
+  print(diff)  
+  
+  if (doWrite) {
+    # Optionally: file.copy(fileName, paste0(fileName, ".bak"))
+    writeLines(newLines, fileName)
+    message(sprintf("Header replaced in %s", fileName))
+  } else {
+    message(sprintf("No changes written to %s (dry run only)", fileName))
+  }
+}
+
+# ---- Batch process all .Rmd files (dry run) ----
+rmdFolder <- "C:/Users/jmcoleman2/Documents/GitHub/Template-code-2026/R-Code"
+rmdFiles <- list.files(rmdFolder, pattern = "\\.Rmd$", full.names = TRUE, recursive = TRUE)
+lapply(rmdFiles, replaceYamlHeader, author = "Author Name", date = "Date", doWrite = TRUE)
+```
