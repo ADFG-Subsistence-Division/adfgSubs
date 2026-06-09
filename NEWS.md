@@ -1,3 +1,5 @@
+# adfgSubs 0.9.0
+
 # adfgSubs 0.8.0
 * Update combineCI() to combine estimates and CIs based on mean or sum
 * Added adfgKbl for html table (kable) styling
