@@ -1,4 +1,6 @@
 # adfgSubs 0.9.0
+* Added new functions needed for 2025 study year code
+* Added themes for ggplot and gt
 
 # adfgSubs 0.8.0
 * Update combineCI() to combine estimates and CIs based on mean or sum
