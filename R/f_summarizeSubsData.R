@@ -171,8 +171,8 @@ getSubsSurveyEstimate <- function(data,
 
 #' Safely return maximum value
 #'
-#' @param x
-#' @param na.rm
+#' @param x A vector
+#' @param na.rm Remove NA values (TRUE or FALSE)
 #'
 #' @returns The maximum value from a vector; returns NA if all values are NA.
 #' @export
@@ -203,8 +203,8 @@ safeMax <- function(x, na.rm=TRUE)
 
 #' Safely return minimum value
 #'
-#' @param x
-#' @param na.rm
+#' @param x A vector
+#' @param na.rm Remove NA values (TRUE or FALSE)
 #'
 #' @returns The minimum value from a vector; returns NA if all values are NA.
 #' @export
@@ -234,8 +234,8 @@ safeMin <- function(x, na.rm=TRUE)
 
 #' Safely return sum of values
 #'
-#' @param x
-#' @param na.rm
+#' @param x A vector
+#' @param na.rm Remove NA values (TRUE or FALSE)
 #'
 #' @returns The sum of values in a vector; returns NA if all values are NA.
 #' @export

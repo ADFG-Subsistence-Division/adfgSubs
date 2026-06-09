@@ -7,7 +7,9 @@
 safeMax(x, na.rm = TRUE)
 }
 \arguments{
-\item{na.rm}{}
+\item{x}{A vector}
+
+\item{na.rm}{Remove NA values (TRUE or FALSE)}
 }
 \value{
 The maximum value from a vector; returns NA if all values are NA.

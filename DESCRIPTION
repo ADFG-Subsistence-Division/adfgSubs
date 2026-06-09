@@ -15,7 +15,9 @@ Imports:
     rio,
     knitr,
     data.table,
-    kableExtra
+    kableExtra,
+    gt,
+    dplyr
 RoxygenNote: 7.3.3
 Suggests: 
     testthat (>= 3.0.0)

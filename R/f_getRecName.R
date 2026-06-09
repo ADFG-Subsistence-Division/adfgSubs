@@ -3,7 +3,6 @@
 #' @returns The name of the record (e.g., "REC04")
 #' @export
 #'
-#' @examples
 #'
 getRecName <- function() {
 
