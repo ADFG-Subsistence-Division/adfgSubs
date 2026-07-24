@@ -118,7 +118,7 @@ dfMeanReplaceStratified <- function(sourceData, replCols, checkCol = "filterq", 
     # 4. Use 1 as a last resort
     for (i in seq_len(nrow(temp_data))) {
       if (is.na(temp_data[[col]][i])) {
-        if (!is.na(temp_data$strata_mean[i])) {
+        if (!is.na(temp_data$strata_mean[i]) && temp_data$strata_mean[i] != 0) {
           temp_data[[col]][i] <- temp_data$strata_mean[i]
           path_strata <- path_strata + 1
         } else if (!is.na(temp_data$community_mean[i]) && temp_data$community_mean[i] != 0) {
