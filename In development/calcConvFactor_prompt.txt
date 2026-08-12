@@ -1,0 +1,44 @@
+I'm analyzing subsistence harvest data from household surveys, and have created the attached example data frames to represent the data that I'm working with. Essentially, we rely on a csv of conversion factors to 1) convert the harvested amount of a resource into the pounds of usable weight each harvest yields, and 2) if need be, convert from pounds to a default unit of measure. Most species (resources, as they are called) have existing conversion factors that we pull from a database and enter into the conversion factor csv by hand. However, there are instances of 'unspecified' resources, where the respondent did not know exactly which species was harvested. In the case of unspecified resources, I would like to be able to calculate a conversion factor based on the harvested amounts and conversion factors for similar species. The harvest of any species may be given in various units, but for each resource there is only one default unit. Unit codes are:
+
+unit	| unitDesc
+------------------------
+1	| individual
+2	| pound
+4	| gallon
+5	| quart
+6	| cord
+7	| dozen
+8	| 6-gallon bucket
+9	| plastic shopping bag
+11	| pint
+12	| cup
+
+The default units for a given resource are included in a column of the conversion factor data frame.
+
+I need a function that will calculate a weighted conversion factor for unspecified resources (resources where convFact is NA) given the following possible cases:
+
+Standard case:
+At least one source harvest is > 0 & units == units of unspecified target (default units for both)
+Approach: weighted average of source harvests to calculate conversion factor
+
+Edge case 1:
+At least one source harvest is > 0 & units != units of unspecified target (default units for source, non-default for target)
+Approach: use source conversion factors for calculating weighted average in default units
+
+Edge case 2:
+At least one source harvest is > 0 & units != units of unspecified target (non-default units for source, default units for target)
+Approach: apply temporary standardization; multiply harvest amounts of source by sUnits [convFact * lbsToDefault] then compute weighted average and apply default unit conversion factor to unspecified target
+
+Edge case 3:
+No source harvests for unspecified target
+Approach: Return message "Conversion factor cannot be calculated using weighted average; please manually add a conversion factor for XX resource(s) to the conversion factor file (convFact_final.csv)."
+
+I would also like the function to validate whether or not the correct columns are present in the data frame, and return an error if they aren't. The function should take as inputs the harvest data frame, the conversion factor data frame, the unspecified lookup table, and a vector of column names that will be used to derived the weighted average harvest of source species.
+
+Attached are a sample data frame of harvest data, a sample conversion factor data frame, and the unspecified lookup table. These will provide the data structure necessary for calculating weighted conversion factors.
+
+
+ 
+
+During conversion factor prep, do a check for all unspecified resources:
+Were there harvests of source resources reported for all unspecified resources? If not, flag these so that the analyst can do additional research when developing a conversion factor for unspecified resources (rather than waiting for the function to fail to calculate a conversion factor).
