@@ -4,7 +4,12 @@
 \alias{appendToCSV}
 \title{Append Data Frame to a CSV File}
 \usage{
-appendToCSV(file, new_data)
+appendToCSV(
+  file,
+  newData,
+  by = c("figName", "communty", "studyear"),
+  colTypes = "iiiccccccc"
+)
 }
 \arguments{
 \item{file}{Character string. Path to the CSV file to append to.}
