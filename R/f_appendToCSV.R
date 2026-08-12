@@ -22,15 +22,28 @@
 #'
 #' @export
 
-appendToCSV <- function(file, new_data) {
-  file_exists <- file.exists(file)
-  write.table(
-    new_data,
+appendToCSV <- function(file,
+                        newData,
+                        by = c("figName", "communty", "studyear"),
+                        colTypes = "iiiccccccc") {
+  if (file.exists(file)) {
+    existing_data <- read_csv(file,
+                              na = "",
+                              col_types = colTypes)
+
+    # Remove rows with same keys as any in new_data
+    existing_filtered <- dplyr::anti_join(existing_data, newData, by = by)
+
+    updated_data <- dplyr::bind_rows(existing_filtered, newData)
+
+  } else {
+
+    updated_data <- newData
+  }
+
+  write_excel_csv(
+    updated_data,
     file = file,
-    sep = ",",
-    row.names = FALSE,
-    col.names = !file_exists,
-    append = file_exists,
-    quote = TRUE
-  )
+    quote = "needed",
+    na = "")
 }
