@@ -9,6 +9,8 @@ Description: Functions to organize and standardize data used in the analysis of 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends:
+    R (>= 4.1.0)
 Imports:
     tidyverse,
     magrittr,
