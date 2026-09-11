@@ -26,7 +26,7 @@ library(devtools)
 devtools::document()
 
 # Use usethis to bump version
-usethis::use_version("minor") # or "patch" or "major"
+usethis::use_version("patch") # or "patch" or "major"
 
 # Run your tests
 devtools::test()

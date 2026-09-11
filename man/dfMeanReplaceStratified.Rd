@@ -49,3 +49,50 @@ This function implements a hierarchical replacement strategy:
  - Displays a summary table with pre/post statistics for each column
  - Displays a second table tracking which replacement path (original/strata/community/fallback) was used and how many times
 }
+\examples{
+
+library(dplyr)
+library(knitr)
+
+# Example data exercising every replacement path.
+# - strata A of community Nome has a valid mean (from harvAmt = 10, 20)
+#   available to fill its NA (checkCol >= 0) -> STRATA MEAN path
+# - strata B of Nome is all NA at strata level but the community mean exists
+#   -> COMMUNITY MEAN path
+# - the Kotzebue rows show the checkCol gate: an NA checkCol and a negative
+#   checkCol both force a 0 replacement regardless of available means
+# - the all-NA strata + all-NA community (resource "bird") triggers FALLBACK 1
+toyData <- tibble::tibble(
+  projID     = 1,
+  studyear   = 2026,
+  communty   = c("Nome", "Nome", "Nome", "Nome",
+                 "Kotzebue", "Kotzebue", "Kotzebue"),
+  resource   = c("salmon", "salmon", "salmon", "salmon",
+                 "salmon", "salmon", "bird"),
+  strata     = c("A", "A", "B", "B", "A", "A", "A"),
+  commhh     = c(50, 50, 50, 50, 30, 30, 30),
+  NHouseholds = c(120, 120, 120, 120, 80, 80, 80),
+  filterq    = c(1, 1, 1, 1, NA, -9, 1),
+  harvAmt    = c(10, 20, NA, 5, NA, NA, NA)
+)
+
+# Row-by-row expected outcome for harvAmt:
+#   1: 10  (original)
+#   2: 20  (original)
+#   3: NA -> strata A mean is 15 -> 15  (strata mean)
+#   4: 5   (original)
+#   5: NA, filterq = NA -> 0            (checkCol gate)
+#   6: NA, filterq = -9 -> 0            (checkCol gate)
+#   7: NA, resource "bird" all NA -> 1  (fallback)
+harvData <- dfMeanReplaceStratified(
+  sourceData = toyData,
+  replCols   = "harvAmt",
+  checkCol   = "filterq",
+  verbose    = TRUE
+)
+
+harvData
+
+
+
+}
