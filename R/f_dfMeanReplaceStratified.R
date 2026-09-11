@@ -32,6 +32,52 @@
 #' @param verbose Logical; should diagnostic tables be rendered? Default is TRUE.
 #' @returns A modified data frame containing mean replaced values in the specified variables, plus diagnostic tibbles if verbose=TRUE.
 #'
+#' @examples
+#'
+#' library(dplyr)
+#' library(knitr)
+#'
+#' # Example data exercising every replacement path.
+#' # - strata A of community Nome has a valid mean (from harvAmt = 10, 20)
+#' #   available to fill its NA (checkCol >= 0) -> STRATA MEAN path
+#' # - strata B of Nome is all NA at strata level but the community mean exists
+#' #   -> COMMUNITY MEAN path
+#' # - the Kotzebue rows show the checkCol gate: an NA checkCol and a negative
+#' #   checkCol both force a 0 replacement regardless of available means
+#' # - the all-NA strata + all-NA community (resource "bird") triggers FALLBACK 1
+#' toyData <- tibble::tibble(
+#'   projID     = 1,
+#'   studyear   = 2026,
+#'   communty   = c("Nome", "Nome", "Nome", "Nome",
+#'                  "Kotzebue", "Kotzebue", "Kotzebue"),
+#'   resource   = c("salmon", "salmon", "salmon", "salmon",
+#'                  "salmon", "salmon", "bird"),
+#'   strata     = c("A", "A", "B", "B", "A", "A", "A"),
+#'   commhh     = c(50, 50, 50, 50, 30, 30, 30),
+#'   NHouseholds = c(120, 120, 120, 120, 80, 80, 80),
+#'   filterq    = c(1, 1, 1, 1, NA, -9, 1),
+#'   harvAmt    = c(10, 20, NA, 5, NA, NA, NA)
+#' )
+#'
+#' # Row-by-row expected outcome for harvAmt:
+#' #   1: 10  (original)
+#' #   2: 20  (original)
+#' #   3: NA -> strata A mean is 15 -> 15  (strata mean)
+#' #   4: 5   (original)
+#' #   5: NA, filterq = NA -> 0            (checkCol gate)
+#' #   6: NA, filterq = -9 -> 0            (checkCol gate)
+#' #   7: NA, resource "bird" all NA -> 1  (fallback)
+#' harvData <- dfMeanReplaceStratified(
+#'   sourceData = toyData,
+#'   replCols   = "harvAmt",
+#'   checkCol   = "filterq",
+#'   verbose    = TRUE
+#' )
+#'
+#' harvData
+#'
+#'
+#'
 #' @export
 
 dfMeanReplaceStratified <- function(sourceData, replCols, checkCol = "filterq", verbose = TRUE) {
@@ -106,19 +152,28 @@ dfMeanReplaceStratified <- function(sourceData, replCols, checkCol = "filterq", 
     # ===== TRACK REPLACEMENT PATHS =====
     # Initialize counters for each replacement path before applying replacements
     path_original <- sum(!is.na(sourceData[[col]]))
+    path_checkcol_zero <- 0
     path_strata <- 0
     path_community <- 0
     path_fallback <- 0
 
     # ===== APPLY REPLACEMENT HIERARCHY =====
     # For each row, replace NA values using the following priority:
+    # 0. If checkCol is NA or negative, replace with 0 (short-circuits all other paths)
     # 1. Keep original value if not NA
     # 2. Use strata mean if available
     # 3. Use community mean if not equal to zero
     # 4. Use 1 as a last resort
     for (i in seq_len(nrow(temp_data))) {
       if (is.na(temp_data[[col]][i])) {
-        if (!is.na(temp_data$strata_mean[i]) && temp_data$strata_mean[i] != 0) {
+        # ----- CHECKCOL GATE -----
+        # Inspect the row's checkCol value. If it is NA or negative,
+        # the missing value is replaced with 0 and no further pathways run.
+        check_val <- temp_data[[checkCol]][i]
+        if (is.na(check_val) || check_val < 0) {
+          temp_data[[col]][i] <- 0
+          path_checkcol_zero <- path_checkcol_zero + 1
+        } else if (!is.na(temp_data$strata_mean[i]) && temp_data$strata_mean[i] != 0) {
           temp_data[[col]][i] <- temp_data$strata_mean[i]
           path_strata <- path_strata + 1
         } else if (!is.na(temp_data$community_mean[i]) && temp_data$community_mean[i] != 0) {
@@ -175,9 +230,9 @@ dfMeanReplaceStratified <- function(sourceData, replCols, checkCol = "filterq", 
     # ===== ACCUMULATE REPLACEMENT PATH TRACKING TABLE =====
     # Track which replacement path was used and how many times for each column
     replacement_path_tbl <- replacement_path_tbl %>% bind_rows(tibble(
-      Column = c(col, col, col, col),
-      Path = c("Original (not NA)", "Strata mean", "Community mean", "Fallback (1)"),
-      Count = c(path_original, path_strata, path_community, path_fallback)
+      Column = c(col, col, col, col, col),
+      Path = c("Original (not NA)", "CheckCol zero (NA/negative)", "Strata mean", "Community mean", "Fallback (1)"),
+      Count = c(path_original, path_checkcol_zero, path_strata, path_community, path_fallback)
     ))
   }
 
